@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "eslint index.js"
   },
   "repository": {
     "type": "git",
@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/abdulchowdhury-dsi/libgyor/issues"
   },
-  "homepage": "https://github.com/abdulchowdhury-dsi/libgyor#readme"
+  "homepage": "https://github.com/abdulchowdhury-dsi/libgyor#readme",
+  "dependencies": {
+    "mysql": "^2.16.0"
+  }
 }
