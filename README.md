@@ -1,6 +1,6 @@
 # Libgyor
 
-A simple manager for a library of e-books on programming.
+A simple manager for a library of e-books on computer science.
 
 *Under Construction*
 

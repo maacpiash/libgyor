@@ -2,6 +2,8 @@
 // Their responsibilities are separate from the other parts
 // of the program (e.g. handling http requests)
 
+'use strict';
+
 // DB
 const mysql = require('mysql');
 
@@ -9,21 +11,32 @@ const mysql = require('mysql');
 const Book = require('./book.js');
 
 /*** *** *** GET api/books/{id} *** *** ***/
-function get(mysqlConfig, args) {
-  // args = ['api', 'books', '2' (optional)]
+function get(mysqlConfig, id, doWhateverWith) {
   let connection = mysql.createConnection(mysqlConfig);
-  connection.connect(function(err) {
-    if (err) throw err;
-    console.log('Connected!');
-    let sqlStr =
-      args.length == 3
-        ? 'SELECT * FROM books'
-        : 'SELECT * FROM books WHERE id = ' + args[2];
-    connection.query(sqlStr, function(error, result, fields) {
+  try {
+    connection.connect(function(err) {
       if (err) throw err;
-      console.log('RESULT', JSON.stringify(result));
     });
-  });
+  } catch (error) {
+    console.log('SQL ERROR: Connection failed.');
+    console.log(error);
+    return;
+  }
+  let param = id ? ' WHERE id = ' + id : '';
+  let sqlStr = 'SELECT * FROM books' + param;
+
+  try {
+    connection.query(sqlStr, function(error, result, fields) {
+      if (error) throw error;
+      doWhateverWith(JSON.stringify(result));
+    });
+    //return retVal; // 
+  } catch (error) {
+    console.log('SQL ERROR: Query failed.');
+    console.log(error);
+  } finally { // The connection has to end, no matter how the query went
+    connection.end();
+  }
 }
 
 /*** *** *** POST api/books/{id} *** *** ***/

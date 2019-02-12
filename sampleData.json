@@ -1,7 +1,26 @@
-{
-  "name": "Introduction to Algorithms",
-  "author": "CLRS",
-  "description": "Algorithm",
-  "year": 2019,
-  "price": 200
-}
+[
+  {
+    "id": 1,
+    "name": "Introduction to Algorithms",
+    "author": "CLRS",
+    "description": "Algorithm",
+    "year": 2019,
+    "price": 200
+  },
+  {
+    "id": 3,
+    "name": "The C Programming Language",
+    "author": "K&R",
+    "description": "C programming",
+    "year": 2019,
+    "price": 200
+  },
+  {
+    "id": 5,
+    "name": "Digital Logic and Computer Design",
+    "author": "M. Morris Mano",
+    "description": "DLD",
+    "year": 2019,
+    "price": 250
+  }
+]

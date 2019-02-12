@@ -3,7 +3,8 @@
 // Server, routing
 const http = require('http');
 
-// 
+// DBCtrl
+const DbCtrl = require('./dbController');
 
 let mysqlConfig = {
   host: 'localhost',
@@ -11,19 +12,6 @@ let mysqlConfig = {
   password: '1212',
   database: 'booksdb'
 };
-
-/*
-connection.connect(function(error) {
-  if (error) throw error;
-  console.log('Connected!');
-  // let sql =
-  //   'CREATE TABLE books (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255), author VARCHAR(255), description VARCHAR(511), year INT, price INT)';
-  // connection.query(sql, function(err, res) {
-  //   if (err) throw err;
-  //   console.log('Table created!');
-  // });
-});
-*/
 
 const PORT = 1416;
 
@@ -43,6 +31,9 @@ server.on('request', (req, res) => {
     }
   }
 
+  let data = '';
+  res.on('data', chunk => data += chunk);
+  
   let method = req.method;
 
   switch (method) {
