@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node temp.js",
     "test": "eslint index.js"
   },
   "repository": {

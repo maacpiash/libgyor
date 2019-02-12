@@ -3,18 +3,14 @@
 // Server, routing
 const http = require('http');
 
-// DB
-const mysql = require('mysql');
+// 
 
-// Data model
-const Book = require('./book.js');
-
-let connection = mysql.createConnection({
+let mysqlConfig = {
   host: 'localhost',
   user: 'root',
   password: '1212',
   database: 'booksdb'
-});
+};
 
 /*
 connection.connect(function(error) {
@@ -29,8 +25,6 @@ connection.connect(function(error) {
 });
 */
 
-let sqlStr = '';
-let validPaths = ['books'];
 const PORT = 1416;
 
 const server = http.createServer();
@@ -38,27 +32,22 @@ const server = http.createServer();
 server.on('request', (req, res) => {
   let args = req.url.slice(1).split('/');
 
-  if (!validPaths.includes(args[0].toLowerCase())) {
-    console.log(`Invalid URL ${args[0]}`);
+  if (args.length < 2) {
+    console.log('Invalid URL');
     process.exit();
   }
-
-  let returnValue = '';
+  else {
+    if (args[0].toLowerCase() != 'api' && args[1].toLowerCase() != 'books') {
+      console.log(`Invalid URL ${args[0]}/${args[1]}`);
+      process.exit();
+    }
+  }
 
   let method = req.method;
 
   switch (method) {
   case 'GET':
-    connection.connect(function(err) {
-      if (err) throw err;
-      console.log('Connected!');
-      sqlStr = args.length == 1 ? 'SELECT * FROM books' : 'SELECT * FROM books WHERE id = ' + args[1];
-      connection.query(sqlStr, function(error, result, fields) {
-        if (err) throw err;
-        returnValue = JSON.stringify(result);
-        console.log('Books: ' + returnValue);
-      });
-    });
+    
     break;
 
   case 'POST':

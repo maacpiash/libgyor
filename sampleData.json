@@ -1,7 +1,7 @@
 {
-    "name": "Introduction to Algorithms",
-    "author": "CLRS",
-    "description": "Algorithm",
-    "_year": 2019,
-    "price": 200
+  "name": "Introduction to Algorithms",
+  "author": "CLRS",
+  "description": "Algorithm",
+  "year": 2019,
+  "price": 200
 }
