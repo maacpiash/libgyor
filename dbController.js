@@ -43,10 +43,9 @@ function Get(mysqlConfig, id, callBack) {
       return callBack(stuff);
     });
   } catch (error) {
-    returnVal = 'SQL ERROR: Query failed.';
-    console.log(returnVal);
+    console.log('SQL ERROR: Query failed.');
     console.log(error);
-    return callBack(returnVal);
+    return callBack(400);
   } finally { // The connection has to end, no matter how the query went
     connection.end();
   }
@@ -55,38 +54,31 @@ function Get(mysqlConfig, id, callBack) {
 /*** *** *** POST api/books/{id} *** *** ***/
 
 function Post(mysqlConfig, details, callBack) {
-  //
-  let returnVal = 500;
   let connection = mysql.createConnection(mysqlConfig);
   try {
     connection.connect(function(error) {
       if (error) throw error;
     });
   } catch (error) {
-    returnVal = 'SQL ERROR: Connection failed.';
-    console.log(returnVal);
+    console.log('SQL ERROR: Connection failed.');
     console.log(error);
-    return callBack(returnVal);
+    return callBack(503);
   }
-  let year = details['year'] || details['_year'];
-  let price = details['price'] || details['_price'];
 
   let sqlStr =
     'INSERT INTO books (name, author, description, year, price) ' +
     `VALUES ('${details['name']}', '${details['author']}', ` +
-    `'${details['description']}', ${year}, ${price});`;
+    `'${details['description']}', ${details['year']}, ${details['price']});`;
 
   try {
     connection.query(sqlStr, function(err, result) {
       if (err) throw err;
-      returnVal = 201;
-      return callBack(returnVal);
+      return callBack(201);
     });
   } catch (error) {
-    returnVal = 'SQL ERROR: Query failed.';
-    console.log(returnVal);
+    console.log('SQL ERROR: Query failed.');
     console.log(error);
-    return callBack(returnVal);
+    return callBack(400);
   } finally { // The connection has to end, no matter how the query went
     connection.end();
   }
@@ -95,10 +87,9 @@ function Post(mysqlConfig, details, callBack) {
 /*** *** *** PUT api/books/id *** *** ***/
 
 function Put(mysqlConfig, id, details, callBack) {
-  let returnVal = 500;
   let connection = mysql.createConnection(mysqlConfig);
 
-  if(!id) return callBack('Must have ID');
+  if(!id) return callBack(400);
 
   // [1] Check if connection is successful
 
@@ -107,10 +98,9 @@ function Put(mysqlConfig, id, details, callBack) {
       if (error) throw error;
     });
   } catch (error) {
-    returnVal = 'SQL ERROR: Connection failed.';
-    console.log(returnVal);
+    console.log('SQL ERROR: Connection failed.');
     console.log(error);
-    return callBack(returnVal);
+    return callBack(503);
   }
 
   let sqlStr = 'UPDATE books SET ';
@@ -118,25 +108,24 @@ function Put(mysqlConfig, id, details, callBack) {
   let keys = Object.keys(details);
 
   // [2] Check if JSON is valid
+
   try {
-    
+    let dbKeys = ['name', 'author', 'description', 'year', 'price'];
+
     if (keys.includes('name'))  sqlStr += 'name = "' + details['name'] + '", ';
     if (keys.includes('author'))  sqlStr += 'author = "' + details['author'] + '", ';
     if (keys.includes('description'))  sqlStr += 'description = "' + details['description'] + '", ';
-    
-    if (keys.includes('year') || keys.includes('_year'))
-      sqlStr += 'year = ' + (details['year'] || details['_year']) + ', ';
-    
-    if (keys.includes('price') || keys.includes('_price'))
-      sqlStr += 'price = ' + (details['price'] || details['_price']) + ', ';
+    if (keys.includes('year')) sqlStr += 'year = ' + details['year'].toString() + ', ';
+    if (keys.includes('price')) sqlStr += 'price = ' + details['price'].toString() + ', ';
 
-    sqlStr = sqlStr.substring(0, sqlStr.length - 2);
+    sqlStr = sqlStr.substring(0, sqlStr.length - 2); // Removing the last comma
     sqlStr += suffix;
-    console.log('MySQL', sqlStr);
 
+    if (keys.length == 0 || !keys.every(val => dbKeys.includes(val)))
+      throw 'Invalid key(s)';
   } catch (error) {
     console.log(error);
-    return callBack('Invalid JSON');
+    return callBack(400);
   }
 
   // [3] Check if query is executed successfully
@@ -144,14 +133,12 @@ function Put(mysqlConfig, id, details, callBack) {
   try {
     connection.query(sqlStr, function(err, result) {
       if (err) throw err;
-      returnVal = 200;
-      return callBack(returnVal);
+      return callBack(204);
     });
   } catch (error) {
-    returnVal = 'SQL ERROR: Query failed.';
-    console.log(returnVal);
+    console.log('SQL ERROR: Query failed.');
     console.log(error);
-    return callBack(returnVal);
+    return callBack(400);
   } finally { // The connection has to end, no matter how the query went
     connection.end();
   }
@@ -167,10 +154,9 @@ function Delete(mysqlConfig, id, callBack) {
       if (error) throw error;
     });
   } catch (error) {
-    returnVal = 'SQL ERROR: Connection failed.';
-    console.log(returnVal);
+    console.log('SQL ERROR: Connection failed.');
     console.log(error);
-    return callBack(returnVal);
+    return callBack(503);
   }
 
   let sqlStr = 'DELETE FROM books WHERE id = ' + id;
@@ -178,12 +164,11 @@ function Delete(mysqlConfig, id, callBack) {
     connection.query(sqlStr, function(err, result) {
       if (err) throw err;
       console.log(result);
-      return callBack('OK');
+      return callBack(204);
     });
   } catch (error) {
-    returnVal = 'SQL ERROR: Query failed.';
-    console.log(error);
-    return callBack(returnVal);
+    console.log('SQL ERROR: Query failed.');
+    return callBack(400);
   } finally { // The connection has to end, no matter how the query went
     connection.end();
   }
