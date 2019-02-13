@@ -9,9 +9,9 @@ A simple manager for a library of e-books on computer science.
 - [x] Node project initiation
 - [x] Creation of a server
 - [ ] Basic CRUD operations via API
-    - [ ] Create new book entries
-    - [ ] Read existing book entries
-    - [ ] Update existing book entries
-    - [ ] Delete existing book entries
-- [ ] Persistent storage (MySQL)
+    - [x] Create new book entries
+    - [x] Read existing book entries
+    - [x] Update existing book entries
+    - [x] Delete existing book entries
+- [x] Persistent storage (MySQL)
 - [ ] Front-end (Angular/React)

@@ -30,19 +30,21 @@ server.on('request', (req, res) => {
       process.exit();
     }
   }
-
-  // let data = '';
-  // req.on('data', chunk => console.log('Chunk', chunk.toString()));
-  // console.log('Data', data);
-  // console.log('Body', req.body);
-  let response = '';
+  
   let method = req.method;
+  let id = args[2] || undefined;
 
   switch (method) {
   case 'GET':
-    DbCtrl.Get(mysqlConfig, undefined, function (books) {
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.write(books);
+    DbCtrl.Get(mysqlConfig, id, function (books) {
+      
+      if (books != 404) {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.write(books);
+      } else {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.write('Book not found.');
+      }
       res.end();
     });
     break;
@@ -57,35 +59,39 @@ server.on('request', (req, res) => {
     break;
 
   case 'PUT':
-    // TODO
+    req.on('data', body => DbCtrl.Put(mysqlConfig, id, JSON.parse(body.toString('utf8')), function (response) {
+      if (response == 200) {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end();
+      } else {
+        console.log(response);
+        res.end();
+      }
+    }));
     break;
 
   case 'DELETE':
-    if (args.length < 3) {
+    if (!id) {
       res.writeHead(400, { 'Content-Type': 'application/json' });
       res.write('Must provide ID of the book to be deleted.');
       res.end();
-    }
-    DbCtrl.Delete(mysqlConfig, args[2], function(response) {
-      console.log(response);
-      DbCtrl.Get(mysqlConfig, undefined, function (books) {
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.write(books);
-        res.end();
+    } else {
+      DbCtrl.Delete(mysqlConfig, args[2], function(response) {
+        console.log(response);
+        DbCtrl.Get(mysqlConfig, undefined, function (books) {
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.write(books);
+          res.end();
+        });
       });
-    });
-    
+    }    
     break;
 
   default:
     console.log('Invalid request method.');
+    res.end();
     break;
   }
-
-  // console.log('Return value: ' + returnValue);
-  // res.write(returnValue); // This line throws an exception.
-  
-  //res.end();
 });
 
 server.listen(PORT, console.log(`Server started on port ${PORT}`));
