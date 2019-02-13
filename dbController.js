@@ -11,43 +11,55 @@ const mysql = require('mysql');
 const Book = require('./book.js');
 
 /*** *** *** GET api/books/{id} *** *** ***/
-function get(mysqlConfig, id, doWhateverWith) {
+function Get(mysqlConfig, id, callBack) {
+  let returnVal = '';
+  // Establish connection
   let connection = mysql.createConnection(mysqlConfig);
   try {
     connection.connect(function(err) {
       if (err) throw err;
     });
   } catch (error) {
-    console.log('SQL ERROR: Connection failed.');
+    returnVal = 'SQL ERROR: Connection failed.';
+    console.log(returnVal);
     console.log(error);
-    return;
+    return returnVal(returnVal);
   }
+
+  // Now, query
   let param = id ? ' WHERE id = ' + id : '';
   let sqlStr = 'SELECT * FROM books' + param;
 
   try {
-    connection.query(sqlStr, function(error, result, fields) {
+    connection.query(sqlStr, function(error, result) {
       if (error) throw error;
-      doWhateverWith(JSON.stringify(result));
+      return callBack(JSON.stringify(result));
     });
-    //return retVal; // 
   } catch (error) {
-    console.log('SQL ERROR: Query failed.');
+    returnVal = 'SQL ERROR: Query failed.';
+    console.log(returnVal);
     console.log(error);
+    return callBack(returnVal);
   } finally { // The connection has to end, no matter how the query went
     connection.end();
   }
 }
 
 /*** *** *** POST api/books/{id} *** *** ***/
-function post(mysqlConfig, details) {
+function Post(mysqlConfig, details, callBack) {
   //
-  let returnVal = '';
+  let returnVal = 500;
   let connection = mysql.createConnection(mysqlConfig);
-  connection.connect(function(error) {
-    if (error) throw error;
-    console.log('Connected!');
-  });
+  try {
+    connection.connect(function(error) {
+      if (error) throw error;
+    });
+  } catch (error) {
+    returnVal = 'SQL ERROR: Connection failed.';
+    console.log(returnVal);
+    console.log(error);
+    return callBack(returnVal);
+  }
   let year = details['year'] || details['_year'];
   let price = details['price'] || details['_price'];
 
@@ -56,13 +68,56 @@ function post(mysqlConfig, details) {
     `VALUES ('${details['name']}', '${details['author']}', ` +
     `'${details['description']}', ${year}, ${price})`;
 
-  connection.query(sqlStr, function(err, result) {
-    if (err) throw err;
-    console.log('RESULT', result);
-    returnVal = '1 record inserted';
-  });
-  connection.end();
-  return returnVal;
+  try {
+    connection.query(sqlStr, function(err, result) {
+      if (err) throw err;
+      returnVal = 201;
+      return callBack(returnVal);
+    });
+  } catch (error) {
+    returnVal = 'SQL ERROR: Query failed.';
+    console.log(returnVal);
+    console.log(error);
+    return callBack(returnVal);
+  } finally { // The connection has to end, no matter how the query went
+    connection.end();
+  }
 }
 
-module.exports = { get, post };
+/*** *** *** PUT api/books/id *** *** ***/
+function Put(mysqlConfig, sqlQuery, callBack) {
+
+}
+
+/*** *** *** DELETE api/books/id *** *** ***/
+function Delete(mysqlConfig, id, callBack) {
+  let returnVal = '';
+  let connection = mysql.createConnection(mysqlConfig);
+  try {
+    connection.connect(function(error) {
+      if (error) throw error;
+    });
+  } catch (error) {
+    returnVal = 'SQL ERROR: Connection failed.';
+    console.log(returnVal);
+    console.log(error);
+    return callBack(returnVal);
+  }
+
+  let sqlStr = 'DELETE FROM books WHERE id = ' + id;
+  try {
+    connection.query(sqlStr, function(err, result) {
+      if (err) throw err;
+      console.log(result);
+      return callBack('OK');
+    });
+  } catch (error) {
+    returnVal = 'SQL ERROR: Query failed.';
+    console.log(error);
+    return callBack(returnVal);
+  } finally { // The connection has to end, no matter how the query went
+    connection.end();
+  }
+}
+
+module.exports = { Get, Post, Delete };

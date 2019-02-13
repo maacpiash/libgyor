@@ -31,18 +31,29 @@ server.on('request', (req, res) => {
     }
   }
 
-  let data = '';
-  res.on('data', chunk => data += chunk);
-  
+  // let data = '';
+  // req.on('data', chunk => console.log('Chunk', chunk.toString()));
+  // console.log('Data', data);
+  // console.log('Body', req.body);
+  let response = '';
   let method = req.method;
 
   switch (method) {
   case 'GET':
-    
+    DbCtrl.Get(mysqlConfig, undefined, function (books) {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.write(books);
+      res.end();
+    });
     break;
 
   case 'POST':
-    // TODO
+    req.on('data', body => DbCtrl.Post(mysqlConfig, JSON.parse(body.toString('utf8')), function (response) {
+      if (response == 201) {
+        res.writeHead(201, { 'Content-Type': 'application/json' });
+        res.end();
+      }
+    }));
     break;
 
   case 'PUT':
@@ -50,7 +61,20 @@ server.on('request', (req, res) => {
     break;
 
   case 'DELETE':
-    // TODO
+    if (args.length < 3) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.write('Must provide ID of the book to be deleted.');
+      res.end();
+    }
+    DbCtrl.Delete(mysqlConfig, args[2], function(response) {
+      console.log(response);
+      DbCtrl.Get(mysqlConfig, undefined, function (books) {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.write(books);
+        res.end();
+      });
+    });
+    
     break;
 
   default:
@@ -58,10 +82,10 @@ server.on('request', (req, res) => {
     break;
   }
 
-  console.log('Return value: ' + returnValue);
-  res.write(returnValue); // This line throws an exception.
-  res.writeHead(200, { 'Content-Type': 'text/json' });
-  res.end();
+  // console.log('Return value: ' + returnValue);
+  // res.write(returnValue); // This line throws an exception.
+  
+  //res.end();
 });
 
 server.listen(PORT, console.log(`Server started on port ${PORT}`));

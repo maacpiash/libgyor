@@ -193,4 +193,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# File added by Ahad Chowdhury
+temp.js
+
 # End of https://www.gitignore.io/api/angular,linux,macos,node,visualstudiocode,windows
