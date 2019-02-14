@@ -60,12 +60,9 @@ function Post(mysqlConfig, details, callBack) {
 
   let connection = mysql.createConnection(mysqlConfig);
   try {
-    connection.connect(function(error) {
-      if (error) throw error;
-    });
+    connection.connect(error => { if (error) throw error; });
   } catch (error) {
-    console.log('SQL ERROR: Connection failed.');
-    console.log(error);
+    console.log('SQL ERROR: Connection failed.\n', error);
     return callBack(503);
   }
 
@@ -80,8 +77,7 @@ function Post(mysqlConfig, details, callBack) {
       return callBack(201);
     });
   } catch (error) {
-    console.log('SQL ERROR: Query failed.');
-    console.log(error);
+    console.log('SQL ERROR: Query failed.\n', error);
     return callBack(400);
   } finally { // The connection has to end, no matter how the query went
     connection.end();
@@ -114,18 +110,18 @@ function Put(mysqlConfig, id, details, callBack) {
   // [2] Check if JSON is valid
 
   try {
-    let dbKeys = ['name', 'author', 'description', 'year', 'price'];
+    let flag = false;
 
-    if (keys.includes('name'))  sqlStr += 'name = "' + details['name'] + '", ';
-    if (keys.includes('author'))  sqlStr += 'author = "' + details['author'] + '", ';
-    if (keys.includes('description'))  sqlStr += 'description = "' + details['description'] + '", ';
-    if (keys.includes('year')) sqlStr += 'year = ' + details['year'].toString() + ', ';
-    if (keys.includes('price')) sqlStr += 'price = ' + details['price'].toString() + ', ';
+    if (keys.includes('name'))  { flag = true; sqlStr += 'name = "' + details['name'] + '", '; }
+    if (keys.includes('author'))  { flag = true; sqlStr += 'author = "' + details['author'] + '", '; }
+    if (keys.includes('description')) { flag = true; sqlStr += 'description = "' + details['description'] + '", '; }
+    if (keys.includes('year')) { flag = true; sqlStr += 'year = ' + details['year'].toString() + ', '; }
+    if (keys.includes('price')) { flag = true; sqlStr += 'price = ' + details['price'].toString() + ', '; }
 
     sqlStr = sqlStr.substring(0, sqlStr.length - 2); // Removing the last comma
     sqlStr += suffix;
 
-    if (keys.length == 0 || !keys.every(val => dbKeys.includes(val)))
+    if (!flag)
       throw 'Invalid key(s)';
   } catch (error) {
     console.log(error);
