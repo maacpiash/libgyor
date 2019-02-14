@@ -21,10 +21,8 @@ function Get(mysqlConfig, id, callBack) {
       if (err) throw err;
     });
   } catch (error) {
-    returnVal = 'SQL ERROR: Connection failed.';
-    console.log(returnVal);
-    console.log(error);
-    return returnVal(returnVal);
+    console.log('SQL ERROR: Connection failed. ', error);
+    return callBack(503);
   }
 
   // Now, query
@@ -54,6 +52,13 @@ function Get(mysqlConfig, id, callBack) {
 /*** *** *** POST api/books/{id} *** *** ***/
 
 function Post(mysqlConfig, details, callBack) {
+  // Check JSON validity before db connection
+  let dbKeys = ['name', 'author', 'description', 'year', 'price'];
+  let jsKeys = Object.keys(details);
+  if (!dbKeys.forEach(k => jsKeys.includes(k)) || !jsKeys.forEach(k => dbKeys.includes(k)))
+    // Keys do not match: set A == set B iff A is a subset of B and B is a subset of A
+    return callBack(400);
+
   let connection = mysql.createConnection(mysqlConfig);
   try {
     connection.connect(function(error) {
@@ -133,7 +138,10 @@ function Put(mysqlConfig, id, details, callBack) {
   try {
     connection.query(sqlStr, function(err, result) {
       if (err) throw err;
-      return callBack(204);
+      if (!result.affectedRows)
+        return callBack(404);
+      else
+        return callBack(204);
     });
   } catch (error) {
     console.log('SQL ERROR: Query failed.');
@@ -147,7 +155,6 @@ function Put(mysqlConfig, id, details, callBack) {
 /*** *** *** DELETE api/books/id *** *** ***/
 
 function Delete(mysqlConfig, id, callBack) {
-  let returnVal = '';
   let connection = mysql.createConnection(mysqlConfig);
   try {
     connection.connect(function(error) {
@@ -164,7 +171,10 @@ function Delete(mysqlConfig, id, callBack) {
     connection.query(sqlStr, function(err, result) {
       if (err) throw err;
       console.log(result);
-      return callBack(204);
+      if (!result.affectedRows)
+        return callBack(404);
+      else
+        return callBack(204);
     });
   } catch (error) {
     console.log('SQL ERROR: Query failed.');

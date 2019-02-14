@@ -1,6 +1,5 @@
 [
   {
-    "id": 1,
     "name": "Introduction to Algorithms",
     "author": "CLRS",
     "description": "Algorithm",
@@ -8,7 +7,6 @@
     "price": 200
   },
   {
-    "id": 3,
     "name": "The C Programming Language",
     "author": "K&R",
     "description": "C programming",
@@ -16,7 +14,6 @@
     "price": 200
   },
   {
-    "id": 5,
     "name": "Digital Logic and Computer Design",
     "author": "M. Morris Mano",
     "description": "DLD",

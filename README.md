@@ -8,7 +8,7 @@ A simple manager for a library of e-books on computer science.
 
 - [x] Node project initiation
 - [x] Creation of a server
-- [ ] Basic CRUD operations via API
+- [x] Basic CRUD operations via API
     - [x] Create new book entries
     - [x] Read existing book entries
     - [x] Update existing book entries
