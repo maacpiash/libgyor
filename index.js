@@ -21,7 +21,7 @@ server.on('request', (req, res) => {
   let args = req.url.slice(1).split('/');
   if (args.length < 2 || args[0].toLowerCase() != 'api' || args[1].toLowerCase() != 'books') {
     res.writeHead(400, { 'Content-Type': 'text/plain' });
-    res.write(`Invalid URL ${args[0]}/${args[1]}`);
+    res.write('Invalid URL');
     res.end();
   }
 

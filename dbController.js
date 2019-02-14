@@ -7,9 +7,6 @@
 // DB
 const mysql = require('mysql');
 
-// Data model
-const Book = require('./book.js');
-
 /*** *** *** GET api/books/{id} *** *** ***/
 
 function Get(mysqlConfig, id, callBack) {
@@ -55,9 +52,11 @@ function Post(mysqlConfig, details, callBack) {
   // Check JSON validity before db connection
   let dbKeys = ['name', 'author', 'description', 'year', 'price'];
   let jsKeys = Object.keys(details);
-  if (!dbKeys.forEach(k => jsKeys.includes(k)) || !jsKeys.forEach(k => dbKeys.includes(k)))
-    // Keys do not match: set A == set B iff A is a subset of B and B is a subset of A
-    return callBack(400);
+  let contains = true;
+  dbKeys.forEach(k => contains = contains && jsKeys.includes(k));
+  if (!contains)
+    // Not all necessary keys are available in JSON
+    return callBack(400); // Bad request
 
   let connection = mysql.createConnection(mysqlConfig);
   try {
