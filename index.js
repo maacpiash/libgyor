@@ -102,7 +102,7 @@ server.on('request', (req, res) => {
     break;
 
   default:
-    console.log('Invalid request method.');
+    console.log(`Invalid request ${method}.`);
     res.writeHead(400, { 'Content-Type': 'text/plain' }); // Bad request
     res.write('Requested method is not acceptable. Only GET, POST, PUT, DELETE methods are accepted.\n');
     res.end();
