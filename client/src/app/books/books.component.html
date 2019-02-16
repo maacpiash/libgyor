@@ -1,9 +1,6 @@
-<h2>
-  {{book.name}}
-</h2>
-<div><span>id: </span>{{book.id}}</div>
-<div>
-  <label>name:
-    <input [(ngModel)]="book.name" placeholder="name">
-  </label>
-</div>
+<h2>Available books</h2>
+<ul class='books'>
+  <li *ngFor='let book of books'>
+    <span class='badge'>{{book.name}}</span>
+  </li>
+</ul>
