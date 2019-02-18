@@ -96,9 +96,18 @@ function Post(mysqlConfig, details, callBack) {
 /*** *** *** PUT api/books/id *** *** ***/
 
 function Put(mysqlConfig, id, details, callBack) {
-  let connection = mysql.createConnection(mysqlConfig);
+
+  // [0] Check if the request has an ID and a parsable JSON body
 
   if (!id) return callBack(400);
+
+  try {
+    details = JSON.parse(details);
+  } catch (e) {
+    return callBack('Invalid JSON : Syntax error.');
+  }
+
+  let connection = mysql.createConnection(mysqlConfig);
 
   // [1] Check if connection is successful
 
@@ -107,7 +116,6 @@ function Put(mysqlConfig, id, details, callBack) {
       if (error) throw error;
     });
   } catch (error) {
-    console.log('SQL ERROR: Connection failed.');
     console.log(error);
     return callBack(503);
   }
@@ -115,10 +123,9 @@ function Put(mysqlConfig, id, details, callBack) {
   let sqlStr = 'UPDATE books SET ';
   let suffix = ' WHERE id = ' + id + ';';
 
-  // [2] Check if JSON is valid
+  // [2] Check if JSON has at least one valid key-value pair
 
   try {
-    details = JSON.parse(details);
     let keys = Object.keys(details);
     let flag = false;
 
@@ -160,7 +167,6 @@ function Put(mysqlConfig, id, details, callBack) {
       else return callBack(204);
     });
   } catch (error) {
-    console.log('SQL ERROR: Query failed.');
     console.log(error);
     return callBack(400);
   } finally {

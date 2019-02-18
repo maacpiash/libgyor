@@ -5,34 +5,4 @@
   </li>
 </ul>
 
-<div *ngIf="selectedBook">
- 
-  <h2>{{selectedBook.name}} Details</h2>
-  <div><span>id: </span>{{selectedBook.id}}</div>
-  <div>
-    <label>Name:
-      <input [(ngModel)]="selectedBook.name" placeholder="Name">
-    </label>
-  </div>
-  <div>
-    <label>Author:
-      <input [(ngModel)]="selectedBook.author" placeholder="Author">
-    </label>
-  </div>
-  <div>
-    <label>Description:
-      <input [(ngModel)]="selectedBook.description" placeholder="Description">
-    </label>
-  </div>
-  <div>
-    <label>Year:
-      <input [(ngModel)]="selectedBook.year" placeholder="Year">
-    </label>
-    <div>
-      <label>Price:
-        <input [(ngModel)]="selectedBook.price" placeholder="Price">
-      </label>
-    </div>
-  </div>
- 
-</div>
+<app-book-detail [book]="selectedBook"></app-book-detail>
