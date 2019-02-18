@@ -196,5 +196,7 @@ $RECYCLE.BIN/
 # File added by Ahad Chowdhury
 temp.js
 password.json
+server/*
+client/*
 
 # End of https://www.gitignore.io/api/angular,linux,macos,node,visualstudiocode,windows

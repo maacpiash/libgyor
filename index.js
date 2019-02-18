@@ -27,20 +27,20 @@ server.on('request', (req, res) => {
 
   let method = req.method;
   let id = args[2] || undefined;
+  let message = '';
 
   switch (method) {
   case 'GET':
     DbCtrl.Get(mysqlConfig, id, function (books) {
       if (books != 404) {
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.write(books);
+        res.end(books);
         console.log(new Date().toLocaleString(), method, '200');
       } else {
         res.writeHead(404, { 'Content-Type': 'text/plain' });
-        res.write('Book not found.');
+        res.end('Book not found.');
         console.log(new Date().toLocaleString(), method, '404');
-      }
-      res.end();
+      }      
     });
     break;
 
@@ -48,23 +48,41 @@ server.on('request', (req, res) => {
     req.on('data', body => DbCtrl.Post(mysqlConfig, body.toString('utf8'), function (response) {
       if (response == 201) {
         res.writeHead(201, { 'Content-Type': 'text/plain' });
-        res.write('Entry created.');
+        res.end('Entry created.');
       } else if (typeof response == 'string') {
         res.writeHead(400, { 'Content-Type': 'text/plain' });
-        res.write(response);
+        res.end(400, response);
       } else {
         res.writeHead(response, { 'Content-Type': 'text/plain' });
-        res.write(response >= 500 ? 'Sorry, something went wrong.' : 'Invalid ');
+        message = response >= 500 ? 'Sorry, something went wrong.' : 'Invalid request.';
+        res.end(message);
       }
       console.log(new Date().toLocaleString(), method, response);
-      res.end();
     }));
     break;
 
   case 'PUT':
     req.on('data', body => DbCtrl.Put(mysqlConfig, id, body.toString('utf8'), function (response) {
+      if (typeof response == 'string') {
+        message = response;
+        response = 400;
+      } else switch(response) {
+      case 204:
+        message = 'Book detail(s) modified.';
+        break;
+      case 400:
+        message = 'Bad request';
+        break;
+      case 404:
+        message = 'Book not found';
+        break;
+      case 503:
+        message = 'SQL ERROR: Connection failed.';
+        break;
+      default:
+        break;
+      }
       console.log(new Date().toLocaleString(), method, response);
-      response = typeof response == 'string' ? 400 : response;
       res.writeHead(response, { 'Content-Type': 'text/plain' });
       res.end();
     }));
@@ -73,14 +91,13 @@ server.on('request', (req, res) => {
   case 'DELETE':
     if (!id) {
       res.writeHead(400, { 'Content-Type': 'text/plain' }); // Bad request
-      res.write('Must provide ID of the book to be deleted.');
       console.log(new Date().toLocaleString(), method, 400);
-      res.end();
+      res.end('Must provide ID of the book to be deleted.');
     } else {
       DbCtrl.Delete(mysqlConfig, args[2], function (response) {
         console.log(new Date().toLocaleString(), method, response);
         res.writeHead(response, { 'Content-Type': 'text/plain' });
-        res.end();
+        res.end(`Book with id ${id} deleted.`);
       });
     }
     break;
