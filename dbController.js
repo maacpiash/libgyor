@@ -96,18 +96,18 @@ function Post(mysqlConfig, details, callBack) {
 /*** *** *** PUT api/books/id *** *** ***/
 
 function Put(mysqlConfig, id, details, callBack) {
-  let connection = mysql.createConnection(mysqlConfig);
 
   if (!id) return callBack(400);
 
   // [1] Check if connection is successful
+
+  let connection = mysql.createConnection(mysqlConfig);
 
   try {
     connection.connect(function(error) {
       if (error) throw error;
     });
   } catch (error) {
-    console.log('SQL ERROR: Connection failed.');
     console.log(error);
     return callBack(503);
   }
@@ -119,9 +119,15 @@ function Put(mysqlConfig, id, details, callBack) {
 
   try {
     details = JSON.parse(details);
+  } catch (e) {
+    return callBack('Invalid JSON');
+  }
+
+  try {
     let keys = Object.keys(details);
     let flag = false;
 
+    // 'keys' need to have at least one valid key included    
     if (keys.includes('name')) {
       flag = true;
       sqlStr += 'name = "' + details['name'] + '", ';
@@ -162,7 +168,7 @@ function Put(mysqlConfig, id, details, callBack) {
   } catch (error) {
     console.log('SQL ERROR: Query failed.');
     console.log(error);
-    return callBack(400);
+    return callBack(500);
   } finally {
     // The connection has to end, no matter how the query went
     connection.end();
