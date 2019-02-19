@@ -1,5 +1,6 @@
 [
   {
+    "id": 1,
     "name": "Introduction to Algorithms",
     "author": "CLRS",
     "description": "Algorithm",
@@ -7,17 +8,43 @@
     "price": 200
   },
   {
-    "name": "The C Programming Language",
-    "author": "K&R",
-    "description": "C programming",
-    "year": 2019,
-    "price": 200
-  },
-  {
+    "id": 8,
     "name": "Digital Logic and Computer Design",
     "author": "M. Morris Mano",
     "description": "DLD",
     "year": 2019,
     "price": 250
+  },
+  {
+    "id": 10,
+    "name": "The C Programming Language",
+    "author": "K&R",
+    "description": "C programming",
+    "year": 2019,
+    "price": 400
+  },
+  {
+    "id": 14,
+    "name": "C++ Plus Data Structures",
+    "author": "Neil Dale",
+    "description": "C++, Data Structures",
+    "year": 2018,
+    "price": 349
+  },
+  {
+    "id": 15,
+    "name": "Artificial Intelligence: A Modern Approach",
+    "author": "Russell/Norvig",
+    "description": "AI",
+    "year": 2010,
+    "price": 349
+  },
+  {
+    "id": 16,
+    "name": "Introduction to Java programming",
+    "author": "Liang",
+    "description": "Java programming, OOP",
+    "year": 1997,
+    "price": 249
   }
 ]

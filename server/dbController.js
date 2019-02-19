@@ -25,14 +25,17 @@ function Get(mysqlConfig, id, callBack) {
   let param = id ? ' WHERE id = ' + id : '';
   let sqlStr = 'SELECT * FROM books' + param + ';';
   let keys = [];
+  let arr = [];
   let stuff = '';
 
   try {
     connection.query(sqlStr, function(error, result) {
       if (error) throw error;
       stuff = JSON.stringify(result, null, 2) + '\n';
-      keys = JSON.parse(stuff).map(item => item['id']); // from JSON back to array to array of ids
+      arr = JSON.parse(stuff);      
+      keys = arr.map(item => item['id']); // from JSON back to array to array of ids
       if (id && !keys.includes(parseInt(id))) return callBack(404); // Not found!
+      if (id) stuff = JSON.stringify(arr[0], null, 2);
       return callBack(stuff);
     });
   } catch (error) {
@@ -97,19 +100,11 @@ function Post(mysqlConfig, details, callBack) {
 
 function Put(mysqlConfig, id, details, callBack) {
 
-  // [0] Check if the request has an ID and a parsable JSON body
-
   if (!id) return callBack(400);
 
-  try {
-    details = JSON.parse(details);
-  } catch (e) {
-    return callBack('Invalid JSON : Syntax error.');
-  }
+  // [1] Check if connection is successful
 
   let connection = mysql.createConnection(mysqlConfig);
-
-  // [1] Check if connection is successful
 
   try {
     connection.connect(function(error) {
@@ -123,12 +118,19 @@ function Put(mysqlConfig, id, details, callBack) {
   let sqlStr = 'UPDATE books SET ';
   let suffix = ' WHERE id = ' + id + ';';
 
-  // [2] Check if JSON has at least one valid key-value pair
+  // [2] Check if JSON is valid
+
+  try {
+    details = JSON.parse(details);
+  } catch (e) {
+    return callBack('Invalid JSON');
+  }
 
   try {
     let keys = Object.keys(details);
     let flag = false;
 
+    // 'keys' need to have at least one valid key included    
     if (keys.includes('name')) {
       flag = true;
       sqlStr += 'name = "' + details['name'] + '", ';
@@ -167,8 +169,9 @@ function Put(mysqlConfig, id, details, callBack) {
       else return callBack(204);
     });
   } catch (error) {
+    console.log('SQL ERROR: Query failed.');
     console.log(error);
-    return callBack(400);
+    return callBack(500);
   } finally {
     // The connection has to end, no matter how the query went
     connection.end();
