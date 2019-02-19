@@ -1,28 +1,24 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HttpClientModule } from '@angular/common/http';
-import { BooksComponent } from './books/books.component';
-import { BookDetailComponent } from './book-detail/book-detail.component';
-import { MessagesComponent } from './messages/messages.component';
-
+import { BookDetailsComponent } from './book-details/book-details.component';
+import { BookDetailComponent } from './book-details/book-detail/book-detail.component';
+import { BookDetailListComponent } from './book-details/book-detail-list/book-detail-list.component';
+import { BookDetailService } from './shared/book-detail.service';
 
 @NgModule({
   declarations: [
     AppComponent,
-    BooksComponent,
+    BookDetailsComponent,
     BookDetailComponent,
-    MessagesComponent
+    BookDetailListComponent
   ],
   imports: [
     BrowserModule,
-    FormsModule,
-    AppRoutingModule,
-    HttpClientModule
+    FormsModule
   ],
-  providers: [],
-  bootstrap: [ AppComponent ]
+  providers: [BookDetailService],
+  bootstrap: [AppComponent]
 })
 export class AppModule { }

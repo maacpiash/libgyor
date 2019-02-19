@@ -1,0 +1,89 @@
+<form #form="ngForm" autocomplete="off">
+  <div class="form-group">
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <div class="input-group-text bg-white">
+          <i class="fas fa-book"></i>
+        </div>
+      </div>
+      <input
+        name="name"
+        #name="ngModel"
+        [(ngModel)]="service.formData.name"
+        class="form-control"
+        placeholder="Name"
+      />
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <div class="input-group-text bg-white">
+          <i class="fas fa-user-circle"></i>
+        </div>
+      </div>
+      <input
+        name="author"
+        #author="ngModel"
+        [(ngModel)]="service.formData.author"
+        class="form-control"
+        placeholder="Author"
+      />
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <div class="input-group-text bg-white">
+          <i class="fas fa-info-circle"></i>
+        </div>
+      </div>
+      <input
+        name="description"
+        #description="ngModel"
+        [(ngModel)]="service.formData.description"
+        class="form-control"
+        placeholder="Description"
+      />
+    </div>
+  </div>
+  <!-- <div class="form-row"> -->
+    <div class="form-group">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <div class="input-group-text bg-white">
+            <i class="far fa-calendar-alt"></i>
+          </div>
+        </div>
+        <input
+          name="year"
+          #year="ngModel"
+          [(ngModel)]="service.formData.year"
+          class="form-control"
+          placeholder="Year"
+        />
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <div class="input-group-text bg-white">
+            <i class="far fa-money-bill-alt"></i>
+          </div>
+        </div>
+        <input
+          name="price"
+          #price="ngModel"
+          [(ngModel)]="service.formData.price"
+          class="form-control"
+          placeholder="Price"
+        />
+      </div>
+    </div>
+  <!-- </div> -->
+  <div class="form-group">
+    <button class="btn btn-success btn-lg btn-block" type="submit">
+      <i class="far fa-save"></i> Submit
+    </button>
+  </div>
+</form>
