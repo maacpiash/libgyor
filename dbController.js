@@ -25,14 +25,17 @@ function Get(mysqlConfig, id, callBack) {
   let param = id ? ' WHERE id = ' + id : '';
   let sqlStr = 'SELECT * FROM books' + param + ';';
   let keys = [];
+  let arr = [];
   let stuff = '';
 
   try {
     connection.query(sqlStr, function(error, result) {
       if (error) throw error;
       stuff = JSON.stringify(result, null, 2) + '\n';
-      keys = JSON.parse(stuff).map(item => item['id']); // from JSON back to array to array of ids
+      arr = JSON.parse(stuff);      
+      keys = arr.map(item => item['id']); // from JSON back to array to array of ids
       if (id && !keys.includes(parseInt(id))) return callBack(404); // Not found!
+      if (id) stuff = JSON.stringify(arr[0], null, 2);
       return callBack(stuff);
     });
   } catch (error) {
