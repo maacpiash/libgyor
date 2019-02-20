@@ -115,7 +115,7 @@ server.on('request', (req, res) => {
             });
           }
         });
-      }
+    }
     break;
 
   case 'DELETE':

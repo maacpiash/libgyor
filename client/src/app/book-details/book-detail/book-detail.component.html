@@ -1,9 +1,14 @@
-<form #form="ngForm" autocomplete="off">
+<form #form="ngForm" autocomplete="off" (submit) = "onSubmit(form)">
+  <input type="hidden" name="id" [value]="service.formData.id">
   <div class="form-group">
     <div class="input-group">
       <div class="input-group-prepend">
         <div class="input-group-text bg-white">
-          <i class="fas fa-book"></i>
+          <i
+            class="fas fa-book"
+            [class.green-icon]="name.valid"
+            [class.red-icon]="name.invalid && name.touched"
+          ></i>
         </div>
       </div>
       <input
@@ -19,7 +24,11 @@
     <div class="input-group">
       <div class="input-group-prepend">
         <div class="input-group-text bg-white">
-          <i class="fas fa-user-circle"></i>
+          <i
+            class="fas fa-user-circle"
+            [class.green-icon]="author.valid"
+            [class.red-icon]="author.invalid && author.touched"
+          ></i>
         </div>
       </div>
       <input
@@ -35,7 +44,11 @@
     <div class="input-group">
       <div class="input-group-prepend">
         <div class="input-group-text bg-white">
-          <i class="fas fa-info-circle"></i>
+          <i
+            class="fas fa-info-circle"
+            [class.green-icon]="description.valid"
+            [class.red-icon]="description.invalid && description.touched"
+          ></i>
         </div>
       </div>
       <input
@@ -47,12 +60,16 @@
       />
     </div>
   </div>
-  <!-- <div class="form-row"> -->
-    <div class="form-group">
+  <div class="form-row">
+    <div class="form-group col-md-7">
       <div class="input-group">
         <div class="input-group-prepend">
           <div class="input-group-text bg-white">
-            <i class="far fa-calendar-alt"></i>
+            <i
+              class="far fa-calendar-alt"
+              [class.green-icon]="year.valid"
+              [class.red-icon]="year.invalid && year.touched"
+            ></i>
           </div>
         </div>
         <input
@@ -61,14 +78,19 @@
           [(ngModel)]="service.formData.year"
           class="form-control"
           placeholder="Year"
+          maxlength="4"
         />
       </div>
     </div>
-    <div class="form-group">
+    <div class="form-group col-md-5">
       <div class="input-group">
         <div class="input-group-prepend">
           <div class="input-group-text bg-white">
-            <i class="far fa-money-bill-alt"></i>
+            <i
+              class="far fa-money-bill-alt"
+              [class.green-icon]="price.valid"
+              [class.red-icon]="price.invalid && price.touched"
+            ></i>
           </div>
         </div>
         <input
@@ -80,9 +102,9 @@
         />
       </div>
     </div>
-  <!-- </div> -->
+  </div>
   <div class="form-group">
-    <button class="btn btn-success btn-lg btn-block" type="submit">
+    <button class="btn btn-success btn-lg btn-block" type="submit" [disabled]="form.invalid">
       <i class="far fa-save"></i> Submit
     </button>
   </div>

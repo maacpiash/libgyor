@@ -1,3 +1,10 @@
-<p>
-  book-detail-list works!
-</p>
+<table class="table table-hover">
+  <tr *ngFor="let book of service.list">
+    <td (click)="populatrForm(book)">{{book.name}}</td>
+    <td (click)="populatrForm(book)">{{book.author}}</td>
+    <td (click)="populatrForm(book)">{{book.description}}</td>
+    <td (click)="populatrForm(book)">{{book.year}}</td>
+    <td (click)="populatrForm(book)">{{book.price}}</td>
+    <td><i class="far fa-trash-alt fa-lg text-danger" (click)="onDelete(book.id)"></i></td>
+  </tr>
+</table>
