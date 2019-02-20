@@ -20,30 +20,22 @@ const server = http.createServer();
 server.on('request', (req, res) => {
   let args = req.url.slice(1).split('/');
   if (args.length < 2 || args[0].toLowerCase() != 'api' || args[1].toLowerCase() != 'books') {
-    res.writeHead(400, { 'Content-Type': 'text/plain' });
-    res.write('Invalid URL');
+    res.writeHead(400, { 'Content-Type': 'application/json' });
+    res.write('{"error": "Invalid URL"}\n');
     res.end();
   }
 
   let method = req.method;
   let id = args[2] || undefined;
-  let message = '';
   let body = [];
   let timeStamp = new Date().toLocaleString();
-  let item = '';
 
   switch (method) {
   case 'GET':
-    DbCtrl.Get(mysqlConfig, id, function (books) {
-      if (books != 404) {
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(books);
-        console.log(timeStamp, method, '200');
-      } else {
-        res.writeHead(404, { 'Content-Type': 'text/plain' });
-        res.end('Book not found.');
-        console.log(timeStamp, method, '404');
-      }      
+    DbCtrl.Get(mysqlConfig, id, function (status, payload) {
+      res.writeHead(status, { 'Content-Type': 'application/json' });
+      res.end(payload);
+      console.log(timeStamp, method, status);
     });
     break;
 
@@ -53,23 +45,14 @@ server.on('request', (req, res) => {
     req.on('data', chunk => body.push(chunk))
       .on('end', () => {
         if(!body.length) {
-          res.writeHead(400, { 'Content-Type': 'text/plain' });
-          res.end('Empty body');
-          console.log(timeStamp, method, 'Empty body');
+          res.writeHead(400, { 'Content-Type': 'application/json' });
+          res.end('{"Error": "Empty body"}\n');
+          console.log(timeStamp, method, '400');
         } else {
-          DbCtrl.Post(mysqlConfig, Buffer.concat(body).toString('utf8'), function (response) {
-            if (response == 201) {
-              res.writeHead(201, { 'Content-Type': 'text/plain' });
-              res.end('Entry created.');
-            } else if (typeof response == 'string') {
-              res.writeHead(400, { 'Content-Type': 'text/plain' });
-              res.end(response);
-            } else {
-              res.writeHead(response, { 'Content-Type': 'text/plain' });
-              message = response >= 500 ? 'Sorry, something went wrong.' : 'Invalid request.';
-              res.end(message);
-            }
-            console.log(timeStamp, method, response);
+          DbCtrl.Post(mysqlConfig, Buffer.concat(body).toString('utf8'), function (status, response) {
+            res.writeHead(status, { 'Content-Type': 'application/json' });
+            res.end(response);
+            console.log(timeStamp, method, status);
           });
         }
       });    
@@ -77,41 +60,22 @@ server.on('request', (req, res) => {
 
   case 'PUT':
     if (!id) {
-      res.writeHead(400, { 'Content-Type': 'text/plain' }); // Bad request
-      console.log(timeStamp, method, 400, 'No ID');
-      res.end('Must provide ID of the book to be deleted.');
+      res.writeHead(400, { 'Content-Type': 'application/json' }); // Bad request
+      res.end('{"Error": "Must provide ID of the book to be deleted."}');
+      console.log(timeStamp, method, "400");
     } else {
       body = [];
       req.on('data', chunk => body.push(chunk))
         .on('end', () => {
           if(!body.length) {
-            res.writeHead(400, { 'Content-Type': 'text/plain' });
-            res.end('Empty body');
-            console.log(timeStamp, method, 'Empty body');
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end('{"Error": "Empty body"}\n');
+            console.log(timeStamp, method, '400');
           } else {
-            DbCtrl.Put(mysqlConfig, id, body.toString('utf8'), function (response) {
-              if (typeof response == 'string') {
-                message = response;
-                response = 400;
-              } else switch(response) {
-              case 204:
-                message = 'Book detail(s) modified.';
-                break;
-              case 400:
-                message = 'Bad request';
-                break;
-              case 404:
-                message = 'Book not found';
-                break;
-              case 503:
-                message = 'SQL ERROR: Connection failed.';
-                break;
-              default:
-                break;
-              }   
-              console.log(timeStamp, method, response);
-              res.writeHead(response, { 'Content-Type': 'text/plain' });
-              res.end(message);
+            DbCtrl.Put(mysqlConfig, id, body.toString('utf8'), function (status, response) {
+              console.log(timeStamp, method, status);
+              res.writeHead(status, { 'Content-Type': 'application/json' });
+              res.end(response);
             });
           }
         });
@@ -120,23 +84,22 @@ server.on('request', (req, res) => {
 
   case 'DELETE':
     if (!id) {
-      res.writeHead(400, { 'Content-Type': 'text/plain' }); // Bad request
-      console.log(timeStamp, method, 400);
-      res.end('Must provide ID of the book to be deleted.');
+      res.writeHead(400, { 'Content-Type': 'application/json' }); // Bad request
+      res.end('{"Error": "Must provide ID of the book to be deleted."}');
+      console.log(timeStamp, method, "400");
     } else {
-      DbCtrl.Delete(mysqlConfig, args[2], function (response) {
-        console.log(timeStamp, method, response);
-        res.writeHead(response, { 'Content-Type': 'text/plain' });
-        res.end(`Book with id ${id} deleted.`);
+      DbCtrl.Delete(mysqlConfig, args[2], function (status, response) {
+        res.writeHead(status, { 'Content-Type': 'application/json' });
+        res.end(response);
+        console.log(timeStamp, method, status);
       });
     }
     break;
 
   default:
-    console.log(`Invalid request ${method}.`);
-    res.writeHead(400, { 'Content-Type': 'text/plain' }); // Bad request
-    res.write('Request method is not acceptable. Only GET, POST, PUT, DELETE methods are accepted.');
-    console.log(timeStamp, method, 400);
+    res.writeHead(405, { 'Content-Type': 'application/json' }); // Bad request
+    res.write(`"Error": "Request method ${method} is not acceptable. Only GET, POST, PUT, DELETE methods are accepted."`);
+    console.log(timeStamp, method, 405);
     res.end();
     break;
   }

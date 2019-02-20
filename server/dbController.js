@@ -7,9 +7,11 @@
 // DB
 const mysql = require('mysql');
 
+// HTTP status codes
 const _200 = (id, action) => `{"Message": "Record with id ${id} was ${action}"}\n`;
 const _201 = '{"Message": "Record created."}\n';
 const _404 = (id) => `{"Error": "Record with id ${id} not found"}\n`;
+const _400 = (e) => `{"Error": "Error: Invalid ${e}."}\n`;
 const _500 = '{"Error": "SQL error: Query failed."}\n';
 const _503 = '{"Error": "SQL error: Connection failed."}\n';
 
@@ -29,18 +31,18 @@ function Get(mysqlConfig, id, callBack) {
 
     try {
       connection.query(sqlStr, function (error, result) {
-        if (error) throw error;
-        stuff = JSON.stringify(result, null, 2) + '\n';
+        if (error) return (400, _400('query'));
+        stuff = JSON.stringify(result, null, 2);
         arr = JSON.parse(stuff);
         keys = arr.map(item => item['id']); // from JSON back to array to array of ids
-        if (id && !keys.includes(parseInt(id))) return callBack(404); // Not found!
-        if (id) stuff = JSON.stringify(arr[0], null, 2);
-        return callBack(stuff);
+        if (id && !keys.includes(parseInt(id))) return callBack(404, _404(id)); // Not found!
+        if (id)
+          // in case of a single-item query, return an object, not an array of a single object 
+          stuff = JSON.stringify(arr[0], null, 2);
+        return callBack(200, stuff + '\n');
       });
     } catch (error) {
-      console.log('SQL ERROR: Query failed.');
       console.log(error);
-      return callBack(400);
     } finally {
       // The connection has to end, no matter how the query went
       connection.end();
@@ -56,7 +58,7 @@ function Post(mysqlConfig, details, callBack) {
   try {
     details = JSON.parse(details);
   } catch (e) {
-    return callBack('Invalid JSON : Syntax error.');
+    return callBack(400, _400('JSON (syntax error)'));
   }
 
   let dbKeys = ['name', 'author', 'description', 'year', 'price'];
@@ -65,7 +67,7 @@ function Post(mysqlConfig, details, callBack) {
   dbKeys.forEach(k => (contains = contains && jsKeys.includes(k)));
   if (!contains)
     // Not all necessary keys are available in JSON
-    return callBack('Invalid JSON : Keys missing.'); // Bad request
+    return callBack(400, _400('JSON (keys missing)'));
 
   let connection = mysql.createConnection(mysqlConfig);
   connection.connect(error => {
@@ -76,12 +78,12 @@ function Post(mysqlConfig, details, callBack) {
 
     try {
       connection.query(sqlStr, function (err, result) {
-        if (err) throw err;
-        return callBack(201);
+        if (err) return callBack(400, _400('query'));
+        return callBack(201, _201);
       });
     } catch (error) {
-      console.log('SQL ERROR: Query failed.\n', error);
-      return callBack(400);
+      console.log(error);
+      return callBack(500, _500);
     } finally {
       // The connection has to end, no matter how the query went
       connection.end();
@@ -102,7 +104,7 @@ function Put(mysqlConfig, id, details, callBack) {
   try {
     details = JSON.parse(details);
   } catch (e) {
-    return callBack('Invalid JSON');
+    return callBack(400, _400('JSON (syntax error)'));
   }
 
   try {
@@ -134,9 +136,9 @@ function Put(mysqlConfig, id, details, callBack) {
     sqlStr = sqlStr.substring(0, sqlStr.length - 2); // Removing the last comma
     sqlStr += suffix;
 
-    if (!flag) throw 'Invalid key(s)';
+    if (!flag) return callBack(400, _400('JSON (keys missing)'));
   } catch (error) {
-    return callBack(error);
+    console.log(error);
   }
 
   // [3] Check if query is executed successfully
@@ -146,14 +148,13 @@ function Put(mysqlConfig, id, details, callBack) {
     if (error) return callBack(503, _503);
     try {
       connection.query(sqlStr, function (err, result) {
-        if (err) throw err;
-        if (!result.affectedRows) return callBack(404);
-        else return callBack(204);
+        if (err) return callBack(400, _400('query'));
+        if (!result.affectedRows) return callBack(404, _404(id));
+        else return callBack(200, _200(id, 'modified'));
       });
     } catch (error) {
-      console.log('SQL ERROR: Query failed.');
       console.log(error);
-      return callBack(500);
+      return callBack(500, _500);
     } finally {
       // The connection has to end, no matter how the query went
       connection.end();
@@ -170,13 +171,13 @@ function Delete(mysqlConfig, id, callBack) {
     let sqlStr = 'DELETE FROM books WHERE id = ' + id;
     try {
       connection.query(sqlStr, function (err, result) {
-        if (err) throw err;
-        if (!result.affectedRows) return callBack(404);
-        else return callBack(204);
+        if (err) callBack(400, _400('query'));
+        if (!result.affectedRows) return callBack(404, _404(id));
+        else return callBack(200, _200(id, 'deleted'));
       });
     } catch (error) {
-      console.log('SQL ERROR: Query failed.');
-      return callBack(400);
+      console.log(error);
+      return callBack(500, _500);
     } finally {
       // The connection has to end, no matter how the query went
       connection.end();
