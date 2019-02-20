@@ -21,7 +21,7 @@ export class BookDetailListComponent implements OnInit {
   }
 
   onDelete(id) {
-    if(confirm('Are you sure to delete this record?'))
+    if(confirm('Are you sure to delete this record?')) {
       this.service.deleteBookDetail(id).subscribe(
         res => {
           this.service.refreshList();
@@ -29,6 +29,7 @@ export class BookDetailListComponent implements OnInit {
         },
         err => console.log(err)
       );
-  }  
+    }
+  }
 
 }
