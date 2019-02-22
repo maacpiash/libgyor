@@ -64,7 +64,7 @@ function Post(mysqlConfig, details, callBack) {
   let dbKeys = ['name', 'author', 'description', 'year', 'price'];
   let jsKeys = Object.keys(details);
   let contains = true;
-  dbKeys.forEach(k => (contains = contains && jsKeys.includes(k)));
+  dbKeys.forEach(k => (contains = contains && jsKeys.includes(k) && details[k]));
   if (!contains)
     // Not all necessary keys are available in JSON
     return callBack(400, _400('JSON (keys missing)'));

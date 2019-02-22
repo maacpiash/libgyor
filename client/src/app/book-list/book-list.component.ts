@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { Book } from './../../shared/book.model';
-import { BookDetailService } from './../../shared/book-detail.service';
+import { Book } from '../shared/book.model';
+import { BookDetailService } from '../shared/book-detail.service';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
-  selector: 'app-book-detail-list',
-  templateUrl: './book-detail-list.component.html',
+  selector: 'app-book-list',
+  templateUrl: './book-list.component.html',
   styles: []
 })
-export class BookDetailListComponent implements OnInit {
+export class BookListComponent implements OnInit {
 
   constructor(private service: BookDetailService, private toastr: ToastrService) { }
 
@@ -17,13 +17,13 @@ export class BookDetailListComponent implements OnInit {
   }
 
   populateForm(bd: Book) {
-    this.service.formData = bd;// Object.assign({}, bd);
+    this.service.formData = Object.assign({ }, bd);
   }
 
   onDelete(id) {
-    if(confirm('Are you sure to delete this record?')) {
-      this.service.deleteBookDetail(id).subscribe(
-        res => {
+    if (confirm('Are you sure to delete this record?')) {
+      this.service.deleteBookDetail(id)
+      .subscribe(res => {
           this.service.refreshList();
           this.toastr.warning('Deleted successfully', 'Libgyor');
         },

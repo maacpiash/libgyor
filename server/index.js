@@ -55,7 +55,7 @@ server.on('request', (req, res) => {
             console.log(timeStamp, method, status);
           });
         }
-      });    
+      });
     break;
 
   case 'PUT':
@@ -86,7 +86,7 @@ server.on('request', (req, res) => {
     if (!id) {
       res.writeHead(400, { 'Content-Type': 'application/json' }); // Bad request
       res.end('{"Error": "Must provide ID of the book to be deleted."}');
-      console.log(timeStamp, method, "400");
+      console.log(timeStamp, method, '400');
     } else {
       DbCtrl.Delete(mysqlConfig, args[2], function (status, response) {
         res.writeHead(status, { 'Content-Type': 'application/json' });
@@ -99,7 +99,7 @@ server.on('request', (req, res) => {
   default:
     res.writeHead(405, { 'Content-Type': 'application/json' }); // Bad request
     res.write(`"Error": "Request method ${method} is not acceptable. Only GET, POST, PUT, DELETE methods are accepted."`);
-    console.log(timeStamp, method, 405);
+    console.log(timeStamp, method, '405');
     res.end();
     break;
   }

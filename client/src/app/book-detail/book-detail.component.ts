@@ -13,11 +13,11 @@ export class BookDetailComponent implements OnInit {
   constructor(private service: BookDetailService, private toastr: ToastrService) { }
 
   ngOnInit() {
-    this.resetForm()
+    this.resetForm();
   }
 
   resetForm(form?: NgForm) {
-    if (form != null) { form.resetForm(); }
+    if (form != null) { form.form.reset(); }
     this.service.formData = {
       id: 0,
       name: '',
@@ -36,7 +36,7 @@ export class BookDetailComponent implements OnInit {
   }
 
   insertRecord(form: NgForm) {
-    this.service.postBookDetail(this.service.formData).subscribe(
+    this.service.postBookDetail().subscribe(
       res => {
         this.resetForm(form);
         this.toastr.success('Submitted successfully.', 'Libgyor');
@@ -47,7 +47,7 @@ export class BookDetailComponent implements OnInit {
   }
 
   updateRecord(form: NgForm) {
-    this.service.putBookDetail(this.service.formData).subscribe(
+    this.service.putBookDetail().subscribe(
       res => {
         this.resetForm(form);
         this.toastr.info('Submitted successfully.', 'Libgyor');

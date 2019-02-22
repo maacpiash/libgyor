@@ -194,7 +194,7 @@ $RECYCLE.BIN/
 *.lnk
 
 # File added by Ahad Chowdhury
-temp.js
+server/temp.js
 password.json
 server/error.txt
 # End of https://www.gitignore.io/api/angular,linux,macos,node,visualstudiocode,windows

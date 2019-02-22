@@ -8,17 +8,17 @@ import { HttpClient } from '@angular/common/http';
 export class BookDetailService {
 
   formData: Book;
-  readonly APIURL = '/api/books';
+  readonly APIURL = '/api/books/';
   list: Book[];
 
   constructor(private http: HttpClient) { }
 
-  postBookDetail(formData: Book) {
-    return this.http.post(this.APIURL, formData);
+  postBookDetail() {
+    return this.http.post(this.APIURL, this.formData);
   }
 
-  putBookDetail(formData: Book) {
-    return this.http.put(this.APIURL + formData.id, formData);
+  putBookDetail() {
+    return this.http.put(this.APIURL + this.formData.id, this.formData);
   }
 
   deleteBookDetail(id) {
@@ -26,6 +26,8 @@ export class BookDetailService {
   }
 
   refreshList() {
-    this.http.get(this.APIURL).toPromise().then(res => this.list = res as Book[]);
+    this.http.get(this.APIURL)
+      .toPromise()
+      .then(res => this.list = res as Book[]);
   }
 }
