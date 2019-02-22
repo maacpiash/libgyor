@@ -164,6 +164,18 @@ typings/
 !.vscode/launch.json
 !.vscode/extensions.json
 
+server/.vscode/*
+!server/.vscode/settings.json
+!server/.vscode/tasks.json
+!server/.vscode/launch.json
+!server/.vscode/extensions.json
+
+client/.vscode/*
+!client/.vscode/settings.json
+!client/.vscode/tasks.json
+!client/.vscode/launch.json
+!client/.vscode/extensions.json
+
 ### VisualStudioCode Patch ###
 # Ignore all local history of files
 .history

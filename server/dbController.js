@@ -108,35 +108,22 @@ function Put(mysqlConfig, id, details, callBack) {
   }
 
   try {
-    let keys = Object.keys(details);
-    let flag = false;
+    let dbKeys = ['name', 'author', 'description', 'year', 'price'];
+    let jsKeys = Object.keys(details);
+    let hasMinOneKey = false;
 
     // 'keys' need to have at least one valid key included
-    if (keys.includes('name')) {
-      flag = true;
-      sqlStr += 'name = "' + details['name'] + '", ';
-    }
-    if (keys.includes('author')) {
-      flag = true;
-      sqlStr += 'author = "' + details['author'] + '", ';
-    }
-    if (keys.includes('description')) {
-      flag = true;
-      sqlStr += 'description = "' + details['description'] + '", ';
-    }
-    if (keys.includes('year')) {
-      flag = true;
-      sqlStr += 'year = ' + details['year'].toString() + ', ';
-    }
-    if (keys.includes('price')) {
-      flag = true;
-      sqlStr += 'price = ' + details['price'].toString() + ', ';
-    }
+    dbKeys.forEach(k => {
+      if (jsKeys.includes(k)) {
+        hasMinOneKey = true;
+        sqlStr += `${k} = "${details[k]}", `;
+      }
+    });
 
     sqlStr = sqlStr.substring(0, sqlStr.length - 2); // Removing the last comma
     sqlStr += suffix;
 
-    if (!flag) return callBack(400, _400('JSON (keys missing)'));
+    if (!hasMinOneKey) return callBack(400, _400('JSON (keys missing)'));
   } catch (error) {
     console.log(error);
   }
