@@ -62,7 +62,7 @@ server.on('request', (req, res) => {
     if (!id) {
       res.writeHead(400, { 'Content-Type': 'application/json' }); // Bad request
       res.end('{"Error": "Must provide ID of the book to be deleted."}');
-      console.log(timeStamp, method, "400");
+      console.log(timeStamp, method, '400');
     } else {
       body = [];
       req.on('data', chunk => body.push(chunk))

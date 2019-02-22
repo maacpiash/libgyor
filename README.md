@@ -19,6 +19,9 @@ ng serve
 
 ## Roadmap
 
+<details>
+<summary>Server-side</summary>
+
 - [x] Node project initiation
 - [x] Creation of a server
 - [x] Basic CRUD operations via API
@@ -27,4 +30,15 @@ ng serve
     - [x] Update existing book entries
     - [x] Delete existing book entries
 - [x] Persistent storage (MySQL)
-- [ ] Front-end (Angular/React)
+
+</details>
+<br>
+<details>
+<summary>Client-side</summary>
+
+- [x] Create new book entries
+- [x] Read existing book entries
+- [ ] Update existing book entries
+- [ ] Delete existing book entries
+
+</details>
