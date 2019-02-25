@@ -23,5 +23,4 @@ rules:
   no-unused-vars:
     - warn
   max-len:
-    - off
-    
+    - off    

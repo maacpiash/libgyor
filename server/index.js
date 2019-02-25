@@ -20,6 +20,31 @@ const ROUTE = '/api/books/';
 let server = express();
 server.use(express.json());
 
+// Error handler middleware: Necessary key(s) check
+// POST method must have ALL those keys
+// PUT method must have AT LEAST ONE of those keys
+server.use(ROUTE, function (req, res, next) {
+  const dbKeys = [ 'name', 'author', 'description', 'year', 'price' ];
+  let allMissing = true; // whether all the valid keys exist
+  let oneMissing = false; // whether there is at least one valid key
+
+  for (let k of dbKeys) {
+    if (k in req.body)
+      allMissing = false;
+    else
+      oneMissing = true;
+  }
+
+  if ((req.method == 'POST' && oneMissing) || (req.method == 'PUT' && allMissing)) {
+    console.log(new Date().toLocaleString(), 'POST', '400');
+    res.writeHead('400', { 'Content-Type': 'application/json' });
+    res.end('{ "Error from middleware": "Key(s) missing." }');
+  } else {
+    next();
+  }
+});
+// End of middleware
+
 server.get(ROUTE, (req, res) => {
   let timeStamp = new Date().toLocaleString();
   DbCtrl.Get(mysqlConfig, undefined, (status, payload) => {
