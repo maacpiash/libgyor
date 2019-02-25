@@ -11,9 +11,9 @@ const mysql = require('mysql');
 const _200 = (id, action) => `{"Message": "Record with id ${id} was ${action}"}\n`;
 const _201 = '{"Message": "Record created."}\n';
 const _404 = (id) => `{"Error": "Record with id ${id} not found"}\n`;
-const _400 = (e) => `{"Error": "Error: Invalid ${e}."}\n`;
-const _500 = '{"Error": "SQL error: Query failed."}\n';
-const _503 = '{"Error": "SQL error: Connection failed."}\n';
+const _400 = (e) => `{"Error": "Invalid ${e}."}\n`;
+const _500 = '{"Error": "SQL error (Query failed)."}\n';
+const _503 = '{"Error": "SQL error (Connection failed)."}\n';
 
 /*** *** *** GET api/books/{id} *** *** ***/
 
