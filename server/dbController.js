@@ -8,12 +8,12 @@
 const mysql = require('mysql');
 
 // HTTP status codes
-const _200 = (id, action) => `{"Message": "Record with id ${id} was ${action}"}\n`;
 const _201 = '{"Message": "Record created."}\n';
+const _202 = (id, action) => `{"Message": "Record with id ${id} was ${action}"}\n`;
 const _404 = (id) => `{"Error": "Record with id ${id} not found"}\n`;
-const _400 = (e) => `{"Error": "Error: Invalid ${e}."}\n`;
-const _500 = '{"Error": "SQL error: Query failed."}\n';
-const _503 = '{"Error": "SQL error: Connection failed."}\n';
+const _400 = (e) => `{"Error": "Invalid ${e}."}\n`;
+const _500 = '{"Error": "SQL error (Query failed)."}\n';
+const _503 = '{"Error": "SQL error (Connection failed)."}\n';
 
 /*** *** *** GET api/books/{id} *** *** ***/
 
@@ -137,7 +137,7 @@ function Put(mysqlConfig, id, details, callBack) {
       connection.query(sqlStr, function (err, result) {
         if (err) return callBack(400, _400('query'));
         if (!result.affectedRows) return callBack(404, _404(id));
-        else return callBack(200, _200(id, 'modified'));
+        else return callBack(202, _202(id, 'modified'));
       });
     } catch (error) {
       console.log(error);
@@ -160,7 +160,7 @@ function Delete(mysqlConfig, id, callBack) {
       connection.query(sqlStr, function (err, result) {
         if (err) callBack(400, _400('query'));
         if (!result.affectedRows) return callBack(404, _404(id));
-        else return callBack(200, _200(id, 'deleted'));
+        else return callBack(202, _202(id, 'deleted'));
       });
     } catch (error) {
       console.log(error);
