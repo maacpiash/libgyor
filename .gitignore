@@ -209,4 +209,5 @@ $RECYCLE.BIN/
 server/temp.js
 password.json
 server/error.txt
+server/newdb.js
 # End of https://www.gitignore.io/api/angular,linux,macos,node,visualstudiocode,windows

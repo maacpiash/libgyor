@@ -43,10 +43,10 @@ The `npm` commands might require superuser privilege in *nix systems.
 
 <summary>Client-side</summary>
 
-- [x] Create new book entries
-- [x] Read existing book entries
-- [x] Update existing book entries
-- [x] Delete existing book entries
+- [ ] Create new book entries
+- [ ] Read existing book entries
+- [ ] Update existing book entries
+- [ ] Delete existing book entries
 
 </details>
 
