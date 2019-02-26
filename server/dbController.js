@@ -8,12 +8,12 @@
 const mysql = require('mysql');
 
 // HTTP status codes
-const _201 = '{"Message": "Record created."}\n';
-const _202 = (id, action) => `{"Message": "Record with id ${id} was ${action}"}\n`;
-const _404 = (id) => `{"Error": "Record with id ${id} not found"}\n`;
-const _400 = (e) => `{"Error": "Invalid ${e}."}\n`;
-const _500 = '{"Error": "SQL error (Query failed)."}\n';
-const _503 = '{"Error": "SQL error (Connection failed)."}\n';
+const _201 = '{"Message": "Record created."}';
+const _202 = (id, action) => `{"Message": "Record with id ${id} was ${action}"}`;
+const _404 = (id) => `{"Error": "Record with id ${id} not found"}`;
+const _400 = (e) => `{"Error": "Invalid ${e}."}`;
+const _500 = {Error: "SQL error (Query failed)."};
+const _503 = {Error: "SQL error (Connection failed)."};
 
 /*** *** *** GET api/books/{id} *** *** ***/
 
@@ -31,7 +31,10 @@ function Get(mysqlConfig, id, callBack) {
 
     try {
       connection.query(sqlStr, function (error, result) {
-        if (error) return (400, _400('query'));
+        if (error) {
+          callBack(400, _400('query'));
+          return
+        }
         stuff = JSON.stringify(result, null, 2);
         arr = JSON.parse(stuff);
         keys = arr.map(item => item['id']); // from JSON back to array to array of ids

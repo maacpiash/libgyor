@@ -6,6 +6,8 @@ const cors = require('cors');
 
 // DBCtrl
 const DbCtrl = require('./dbController');
+const service = require('./service');
+const appErrorHandler = require('./app-error-handler');
 
 // MySQL Configuration
 let mysqlConfig = {
@@ -15,49 +17,43 @@ let mysqlConfig = {
   database: 'booksdb'
 };
 
-const PORT = 1416;
+const LISTEN_PORT = process.env.LISTEN_PORT || 1416;
 const ROUTE = '/api/books/';
 
-let server = express();
+let app = express();
 
-server.use(function(req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Methods', 'ACL, CANCELUPLOAD, CHECKIN, CHECKOUT, COPY, DELETE, GET, HEAD, LOCK, MKCALENDAR, MKCOL, MOVE, OPTIONS, POST, PROPFIND, PROPPATCH, PUT, REPORT, SEARCH, UNCHECKOUT, UNLOCK, UPDATE, VERSION-CONTROL');
-  res.header('Access-Control-Allow-Headers', 'Overwrite, Destination, Content-Type, Depth, User-Agent, Translate, Range, Content-Range, Timeout, X-File-Size, X-Requested-With, If-Modified-Since, X-File-Name, Cache-Control, Location, Lock-Token, If');
-  res.header('Access-Control-Expose-Headers', 'DAV, content-length, Allow');
-  next();
-});
+app.use(cors());
 
-server.use(express.json());
+app.use(express.json());
 
+app.use(appErrorHandler);
 
 // Error handler middleware: Necessary key(s) check
 // POST method must have ALL those keys
 // PUT method must have AT LEAST ONE of those keys
-server.use(ROUTE, function (req, res, next) {
-  const dbKeys = [ 'name', 'author', 'description', 'year', 'price' ];
-  let allMissing = true; // whether all the valid keys exist
-  let oneMissing = false; // whether there is at least one valid key
-
-  for (let k of dbKeys) {
-    if (k in req.body)
-      allMissing = false;
-    else
-      oneMissing = true;
-  }
-
-  if ((req.method == 'POST' && oneMissing) || (req.method == 'PUT' && allMissing)) {
-    console.log(new Date().toLocaleString(), 'POST', '400');
-    res.writeHead('400', { 'Content-Type': 'application/json' });
-    res.end('{ "Error from middleware": "Key(s) missing." }');
-  } else {
-    next();
-  }
-});
+// server.use(ROUTE, function (req, res, next) {
+//   const dbKeys = [ 'name', 'author', 'description', 'year', 'price' ];
+//   let allMissing = true; // whether all the valid keys exist
+//   let oneMissing = false; // whether there is at least one valid key
+//
+//   for (let k of dbKeys) {
+//     if (k in req.body)
+//       allMissing = false;
+//     else
+//       oneMissing = true;
+//   }
+//
+//   if ((req.method == 'POST' && oneMissing) || (req.method == 'PUT' && allMissing)) {
+//     console.log(new Date().toLocaleString(), 'POST', '400');
+//     res.writeHead('400', { 'Content-Type': 'application/json' });
+//     res.end('{ "Error from middleware": "Key(s) missing." }');
+//   } else {
+//     next();
+//   }
+// });
 // End of middleware
 
-server.get(ROUTE, (req, res) => {
+app.get('/api/books', (req, res) => {
   let timeStamp = new Date().toLocaleString();
   DbCtrl.Get(mysqlConfig, undefined, (status, payload) => {
     res.writeHead(status, { 'Content-Type': 'application/json' });
@@ -66,16 +62,15 @@ server.get(ROUTE, (req, res) => {
   });
 });
 
-server.get(ROUTE + ':id', (req, res) => {
-  let id = req.params.id;
-  DbCtrl.Get(mysqlConfig, id, (status, payload) => {
-    res.writeHead(status, { 'Content-Type': 'application/json' });
-    res.end(payload);
-    console.log(new Date().toLocaleString(), 'GET', status);
+app.get('/api/books/:id', (req, res, next) => {
+  const id = req.params.id;
+  service.get(id, function (err, book) {
+    if (err) return next(err);
+    res.send(book);
   });
 });
 
-server.post(ROUTE, (req, res) => {
+app.post(ROUTE, (req, res) => {
   DbCtrl.Post(mysqlConfig, JSON.stringify(req.body), (status, payload) => {
     res.writeHead(status, { 'Content-Type': 'application/json' });
     res.end(payload);
@@ -83,7 +78,7 @@ server.post(ROUTE, (req, res) => {
   });
 });
 
-server.put(ROUTE + ':id', (req, res) => {
+app.put(ROUTE + ':id', (req, res) => {
   DbCtrl.Put(mysqlConfig, req.params.id, JSON.stringify(req.body), (status, response) => {
     res.writeHead(status, { 'Content-Type': 'application/json' });
     res.end(response);
@@ -91,7 +86,7 @@ server.put(ROUTE + ':id', (req, res) => {
   });
 });
 
-server.delete(ROUTE + ':id', (req, res) => {
+app.delete(ROUTE + ':id', (req, res) => {
   DbCtrl.Delete(mysqlConfig, req.params.id, (status, response) => {
     res.writeHead(status, { 'Content-Type': 'application/json' });
     res.end(response);
@@ -99,4 +94,4 @@ server.delete(ROUTE + ':id', (req, res) => {
   });
 });
 
-server.listen(PORT, console.log(`Server started on port ${PORT}`));
+app.listen(LISTEN_PORT, console.log(`Server started on port ${LISTEN_PORT}`));
