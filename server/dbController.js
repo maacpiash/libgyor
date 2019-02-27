@@ -10,10 +10,10 @@ const mysql = require('mysql');
 // HTTP status codes
 const _201 = '{"Message": "Record created."}';
 const _202 = (id, action) => `{"Message": "Record with id ${id} was ${action}"}`;
-const _404 = (id) => `{"Error": "Record with id ${id} not found"}`;
-const _400 = (e) => `{"Error": "Invalid ${e}."}`;
-const _500 = {Error: "SQL error (Query failed)."};
-const _503 = {Error: "SQL error (Connection failed)."};
+const _404 = { Error: 'Record not found.' };
+const _400 = { Error: 'Invalid operation.'};
+const _500 = { Error: 'SQL error (Query failed).' };
+const _503 = { Error: 'SQL error (Connection failed).' };
 
 /*** *** *** GET api/books/{id} *** *** ***/
 
@@ -32,8 +32,7 @@ function Get(mysqlConfig, id, callBack) {
     try {
       connection.query(sqlStr, function (error, result) {
         if (error) {
-          callBack(400, _400('query'));
-          return
+          return callBack(400, _400('query'));
         }
         stuff = JSON.stringify(result, null, 2);
         arr = JSON.parse(stuff);
