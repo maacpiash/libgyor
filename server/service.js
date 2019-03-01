@@ -29,7 +29,11 @@ function getAll(cb) {
 }
 
 function post(book, cb) {
-  if (!hasAllKeys(book)) return cb(createError(400, 'All keys required.'));
+  if (!hasAllKeys(book)) {
+    console.log('OBJECT', book);
+    return cb(createError(400, 'All keys required.'));
+  }
+  
   let details = [book.name, book.author, book.description, book.year, book.price];
   connection.query(
     'INSERT INTO books (name, author, description, year, price) VALUES (?, ?, ?, ?, ?)', details, function(error, result) {

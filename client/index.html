@@ -23,28 +23,34 @@
       crossorigin="anonymous"
     ></script>
     <script>
-      var req = new XMLHttpRequest();
-      req.overrideMimeType('application/json');
-      req.open('GET', 'https://localhost:4000/api/books', true);
-      req.onreadystatechange = function() {
-        var myArr = JSON.parse(req.responseText);
-        console.log("ARRAY", myArr);
-        var whattoadd = '<tbody>';
-        $.each(myArr, function(i, item) {
-          whattoadd += '<tr>';
-          whattoadd += '<td>' + item.name + '</td>';
-          whattoadd += '<td>' + item.author + '</td>';
-          whattoadd += '<td>' + item.description + '</td>';
-          whattoadd += '<td>' + item.year + '</td>';
-          whattoadd += '<td>' + item.price + '</td>';
-        });
-        whattoadd += '<tbody/>';
-        $('#table').append(whattoadd);
-      };
-      req.send();
+      $(document).ready(function() {
+        var req = new XMLHttpRequest();
+        req.overrideMimeType('application/json');
+        req.open('GET', 'http://localhost:4000/api/books', true);
+        req.onreadystatechange = function() {
+          let myArr = JSON.parse(req.responseText);
+          var whattoadd = '<tbody>';
+          myArr.forEach(book => {
+            whattoadd += '<tr>';
+            whattoadd += '<td>' + book.name + '</td>';
+            whattoadd += '<td>' + book.author + '</td>';
+            whattoadd += '<td>' + book.description + '</td>';
+            whattoadd += '<td>' + book.year + '</td>';
+            whattoadd += '<td>' + book.price + '</td>';
+            whattoadd += '<td><a href="./edit.html?id=' + book.id + '">Edit</a></td>';
+            whattoadd += '<td><a href="./delete.html?id=' + book.id + '">Delete</a></td>';
+            whattoadd += '</tr>';
+          });
+          whattoadd += '<tbody/>';
+          document.getElementById('table').innerHTML += whattoadd;
+        };
+        req.send();
+      });
     </script>
   </head>
   <body>
+    <h1 id="count"></h1>
+    <!-- <h1 id="\" -->
     <table id="table" class="display compact" style="width:100%;margin:10px">
       <thead>
         <tr>
@@ -53,14 +59,12 @@
           <th>Topics</th>
           <th>Year</th>
           <th>Price</th>
+          <th>Edit</th>
+          <th>Delete</th>
         </tr>
       </thead>
     </table>
-    <button
-      type="button"
-      class="btn btn-primary"
-      style="width:80px"
-    >
+    <button type="button" class="btn btn-primary" style="width:80px">
       Create
     </button>
   </body>

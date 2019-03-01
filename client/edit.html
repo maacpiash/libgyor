@@ -1,0 +1,97 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="main.css" />
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.2/jquery.form.min.js" integrity="sha384-FzT3vTVGXqf7wRfy8k4BiyzvbNfeYjK+frTVqZeNDFl8woCbF0CYG6g2fMEFFo/i" crossorigin="anonymous"></script>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        var url = window.location.href;
+        var index = 'null';
+        if(url.lastIndexOf('?') != -1) {
+          index = url.split('?')[1].split('=')[1];
+        }
+      
+
+      function submitBook() {
+          alert('Hello world!');
+          
+      }
+      document.getElementById("editForm")
+
+      $('#editForm').submit(function (event) {
+        console.log('FORM SUBMIT');
+        var $form = $(this),
+            _name = $form.find( "input[name='name']" ).val(),
+            _author = $form.find( "input[name='author']" ).val(),
+            _description = $form.find( "input[name='description']" ).val(),
+            _year = $form.find( "input[name='year']" ).val(),
+            _price = $form.find( "input[name='price']" ).val();
+        var book = {
+            name = _name,
+            author = _author,
+            description = _description,
+            year = _year,
+            price = _price
+        }
+        var posting = $.post('localhost:4000/api/books', book);
+
+        posting.done(() => alert(book));
+      });
+      $( "#target" ).submit(function( event ) {
+  alert( "Handler for .submit() called." );
+});
+
+
+    });
+    </script>
+    <style>
+        .center {
+            margin: auto;
+            width: 50%;
+            /* border: 3px solid #73AD21; */
+            padding: 10px;
+        }
+    </style>
+  </head>
+  <body>
+    <div class="center">
+    <h3>Edit book details</h3><br><form id="target">
+            <!-- <input type="text" value="Hello there">
+            <input type="submit" value="Go">
+          </form>
+          <div id="other">
+            Trigger the handler
+          </div> -->
+    <form id="editForm" method="post">
+    <div class="form-group">
+        <label for="name">Title:</label>
+        <input type="text" name="name" id="name" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="author">Author:</label>
+        <input type="text" name="author" id="author" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="description">Topics:</label>
+        <input type="text" name="description" id="description" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="year">Year:</label>
+        <input type="text" name="year" id="year" class="form-control">
+    </div>
+    <div class="form-group">
+        <label for="price">Price:</label>
+        <input type="text" name="price" id="price" class="form-control">
+    </div>
+    <input type="submit" value="Save" class="btn btn-default" onclick="submitBook()">
+    </form>
+    </div>
+  </body>
+</html>
