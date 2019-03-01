@@ -13,7 +13,7 @@ const appErrorHandler = require('./app-error-handler');
 
 const LISTEN_PORT = process.env.LISTEN_PORT || 4000;
 
-let app = express();
+const app = express();
 
 app.use(cors());
 
@@ -47,20 +47,25 @@ app.post('/api/books', (req, res, next) => {
 });
 
 app.put('/api/books/:id', (req, res, next) => {
-
-  // DbCtrl.Put(mysqlConfig, req.params.id, JSON.stringify(req.body), (status, response) => {
-  //   res.writeHead(status, { 'Content-Type': 'application/json' });
-  //   res.end(response);
-  //   next();
-  // });
+  service.put(req.params.id, req.body, function (error, result) {
+    if (error) return next(error);
+    if(!result) return next(createError(404, 'Book not found.'));
+    res.send({
+      message: result + ' book modified.'
+    });
+    next();
+  });
 });
 
-app.delete('/api/books/:id', (req, res) => {
-  // DbCtrl.Delete(mysqlConfig, req.params.id, (status, response) => {
-  //   res.writeHead(status, { 'Content-Type': 'application/json' });
-  //   res.end(response);
-  //   console.log(new Date().toLocaleString(), 'DELETE', status);
-  // });
+app.delete('/api/books/:id', (req, res, next) => {
+  service.deLete(req.params.id, function (error, result) {
+    if (error) return next(error);
+    if(!result) return next(createError(404, 'Book not found.'));
+    res.send({
+      message: result + ' book deleted.'
+    });
+    next();
+  });
 });
 
 app.use('/api/books', (req, res, next) => {
@@ -69,6 +74,5 @@ app.use('/api/books', (req, res, next) => {
 });
 
 app.use(appErrorHandler);
-
 
 app.listen(LISTEN_PORT, console.log(`Server started on port ${LISTEN_PORT}`));

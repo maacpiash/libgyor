@@ -29,58 +29,65 @@ function getAll(cb) {
 }
 
 function post(book, cb) {
-  if (!checkKeys(book, true)) return cb(createError(400, 'All keys required.'));
-  connection.connect(function(err) {
-    if (err) return cb(err);
-    let details = [book.name, book.author, book.description, book.year, book.price];
-    connection.query(
-      'INSERT INTO books (name, author, description, year, price) VALUES (?, ?, ?, ?, ?)', details, function(error, result) {
-        if (error) return cb(error);
-        return cb(null, result.insertId);
-      }
-    );
-  });
+  if (!hasAllKeys(book)) return cb(createError(400, 'All keys required.'));
+  let details = [book.name, book.author, book.description, book.year, book.price];
+  connection.query(
+    'INSERT INTO books (name, author, description, year, price) VALUES (?, ?, ?, ?, ?)', details, function(error, result) {
+      if (error) return cb(error);
+      return cb(null, result.insertId);
+    }
+  );
 }
 
 function put(id, book, cb) {
-  let sqlStr = checkKeys(book, false);
-  if (!checkKeys(book, false)) return cb(createError(400, 'At least one valid key required.'));
-  connection.connect(function (err) {
+  if(!hasOneKey(book)) return cb(createError(400, 'At least one key required.'));
+  let sqlStr = buildPutQuery(book, id);
+  connection.query(buildPutQuery(book, id), function(err, res) {
     if (err) return cb(err);
-    
+    return cb(null, res.insertId);
   });
 }
 
-// function put(id, cb) {
-//   connection.connect(function (err) {
-//     if (err) return cb(err);
-//     connection.query();
-//   });
-// }
+function deLete(id, cb) {
+  connection.query('DELETE FROM books WHERE id = ' + id, function(err, res) {
+    if (err) return cb(err);
+    return cb(null, res.affectedRows);
+  });
+}
 
-function checkKeys(book, checkAll) {
+function hasAllKeys(book) {
+  let jsKeys = Object.keys(book);
+  // if (jsKeys === [] || jsKeys === null)
+  //   return false;
   const dbKeys = ['name', 'author', 'description', 'year', 'price'];
-  let allMissing = true; // whether all the valid keys exist
-  let oneMissing = false; // whether there is at least one valid key
+  let flag = true;
+  dbKeys.forEach(k => flag = flag && jsKeys.includes(k));
+  return flag;
+}
 
+function hasOneKey(book) {
+  let jsKeys = Object.keys(book);
+  if (jsKeys.length === 0)
+    return false;
+  const dbKeys = ['name', 'author', 'description', 'year', 'price'];
+  let flag = false;
+  dbKeys.forEach(k => { if (jsKeys.includes(k)) flag = true; });
+  return flag;
+}
+
+function buildPutQuery(book, id) {
   let sqlStr = 'UPDATE books SET ';
-
-  for (let k of dbKeys) {
-    if (k in book) {
-      allMissing = false;
-      if (!checkAll) {
-        sqlStr += k = ' = ' + book[k] + ', ';
-      }
-    } else {
-      oneMissing = true;
-    }
-    return checkAll ? allMissing : (oneMissing ? sqlStr.substring(0, sqlStr.length - 2) : false);
-  }
+  let keys = Object.keys(book);
+  keys.forEach(k => {
+    sqlStr += `${k} = "${book[k]}", `;
+  });
+  return sqlStr.substring(0, sqlStr.length - 2) + ` WHERE id = ${id};`;
 }
 
 module.exports = {
   get,
   getAll,
   post,
-  checkKeys,
+  put,
+  deLete
 };

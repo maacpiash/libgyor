@@ -1,48 +1,67 @@
-<!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Books</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" type="text/css" media="screen" href="main.css">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <script src="main.js"></script>
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-  <script>
-    let req = new XMLHttpRequest();
-    req.overrideMimeType("application/json");
-    req.open("GET", "localhost:1416/api/books", true);
-    req.onload = function() {
-      console.log('Connected!');
-      let books = JSON.parse(req.responseText);
-      let whattoadd = "<tbody>";
-      let max = books.length;
-      let attributes = 5;
-      for (let i = 0; i < max; i++) {
-        whattoadd += '<tr scope="row">';
-        for (let j = 0; j < attributes; j++) {
-          whattoadd += '<td>' + books[i][j] + '</td>';
-        }
-        whattoadd += '</tr>';
-      }
-      whattoadd += '</tbody>';
-      document.getElementById('booksTable').innerHTML += whattoadd;
-    }
-    req.send();
-  </script>
-</head>
-<body>
-  <table class="table" id="booksTable">
-    <thead>
-      <tr scope="col">Title</tr>
-      <tr scope="col">Author</tr>
-      <tr scope="col">Topics</tr>
-      <tr scope="col">Year</tr>
-      <tr scope="col">Price</tr>
-    </thead>
-  </table>
-</body>
+  <head>
+    <link rel="stylesheet" href="main.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      var req = new XMLHttpRequest();
+      req.overrideMimeType('application/json');
+      req.open('GET', 'https://localhost:4000/api/books', true);
+      req.onreadystatechange = function() {
+        var myArr = JSON.parse(req.responseText);
+        console.log("ARRAY", myArr);
+        var whattoadd = '<tbody>';
+        $.each(myArr, function(i, item) {
+          whattoadd += '<tr>';
+          whattoadd += '<td>' + item.name + '</td>';
+          whattoadd += '<td>' + item.author + '</td>';
+          whattoadd += '<td>' + item.description + '</td>';
+          whattoadd += '<td>' + item.year + '</td>';
+          whattoadd += '<td>' + item.price + '</td>';
+        });
+        whattoadd += '<tbody/>';
+        $('#table').append(whattoadd);
+      };
+      req.send();
+    </script>
+  </head>
+  <body>
+    <table id="table" class="display compact" style="width:100%;margin:10px">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Author</th>
+          <th>Topics</th>
+          <th>Year</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+    </table>
+    <button
+      type="button"
+      class="btn btn-primary"
+      style="width:80px"
+    >
+      Create
+    </button>
+  </body>
 </html>

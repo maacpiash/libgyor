@@ -1,5 +1,5 @@
 function appErrorHandler(err, req, res, next) {
-  console.log('ERROR', err);
+  console.log(new Date().toLocaleString(), req.method, err.statusCode, err.message);
   if (err.statusCode) {    
     res.status(err.statusCode);
     res.send({
