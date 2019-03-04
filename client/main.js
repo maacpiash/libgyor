@@ -3,7 +3,9 @@ function deleteBook(id) {
   if (sure) {
     let req = new XMLHttpRequest();
     req.overrideMimeType('application/json');
-    req.open('DELETE', 'http://localhost:4000/api/books/' + id, true);
+    req.open('DELETE', 'localhost:4000/api/books/' + id, true);
+    req.onload = () => alert(JSON.parse(req.responseText).message);
     req.send();
   }
+  location.reload();
 }
