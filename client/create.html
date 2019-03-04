@@ -1,0 +1,89 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="main.css" />
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.2/jquery.form.min.js" integrity="sha384-FzT3vTVGXqf7wRfy8k4BiyzvbNfeYjK+frTVqZeNDFl8woCbF0CYG6g2fMEFFo/i" crossorigin="anonymous"></script>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    
+    <style>
+        .center {
+            margin: auto;
+            width: 50%;
+            /* border: 3px solid #73AD21; */
+            padding: 10px;
+        }
+    </style>
+  </head>
+  <body>
+    <div class="center">
+    <h3>Create</h3><br>
+    <form id="target" method="post">
+    <div class="form-group">
+        <label for="name">Title:</label>
+        <input type="text" name="name" id="name" class="form-control" minlength="1">
+    </div>
+    <div class="form-group">
+        <label for="author">Author:</label>
+        <input type="text" name="author" id="author" class="form-control" minlength="1">
+    </div>
+    <div class="form-group">
+        <label for="description">Topics:</label>
+        <input type="text" name="description" id="description" class="form-control" minlength="1">
+    </div>
+    <div class="form-group">
+        <label for="year">Year:</label>
+        <input type="text" name="year" id="year" class="form-control" minlength="2" maxlength="4">
+    </div>
+    <div class="form-group">
+        <label for="price">Price:</label>
+        <input type="text" name="price" id="price" class="form-control" minlength="1">
+    </div>
+    <input id="butn" type="submit" value="Save" class="btn btn-default">
+    </form>
+    </div>
+  </body>
+  <script>
+    $(document).ready(() => {
+      // var url = window.location.href;
+      // var index = null;
+      // if (url.lastIndexOf('?') != -1)
+      //   index = url.split('?')[1].split('=')[1];
+      function submitBook(url = ``, data = {}) {
+        return fetch(url, {
+          method: "POST", // * GET, POST, PUT, DELETE, etc.
+          headers: {
+            "Access-Control-Allow-Origin":"*",
+            "Content-Type": "application/json", // "Content-Type": "application/x-www-form-urlencoded",
+          },
+          redirect: "follow", // manual, *follow, error
+          referrer: "no-referrer", // no-referrer, *client
+          body: JSON.stringify(data), // body data type must match "Content-Type" header
+        }).then(response => response.json());
+      }
+
+      $("#target").submit(function (event) {
+        event.preventDefault();
+        const data = {
+          name: document.getElementById('name').value,
+          author: document.getElementById('author').value,
+          description: document.getElementById('description').value,
+          year: document.getElementById('year').value,
+          price: document.getElementById('price').value
+        }
+        submitBook('http://localhost:4000/api/books/', data)
+          .then(data => location.href='./index.html') // JSON-string from `response.json()` call
+          .catch(error => console.log('ERROR', error));
+
+      });
+    })
+  </script>
+
+
+</html>
+

@@ -28,21 +28,24 @@
         req.overrideMimeType('application/json');
         req.open('GET', 'http://localhost:4000/api/books', true);
         req.onreadystatechange = function() {
-          let myArr = JSON.parse(req.responseText);
-          var whattoadd = '<tbody>';
-          myArr.forEach(book => {
-            whattoadd += '<tr>';
-            whattoadd += '<td>' + book.name + '</td>';
-            whattoadd += '<td>' + book.author + '</td>';
-            whattoadd += '<td>' + book.description + '</td>';
-            whattoadd += '<td>' + book.year + '</td>';
-            whattoadd += '<td>' + book.price + '</td>';
-            whattoadd += '<td><a href="./edit.html?id=' + book.id + '">Edit</a></td>';
-            whattoadd += '<td><a href="./delete.html?id=' + book.id + '">Delete</a></td>';
-            whattoadd += '</tr>';
-          });
-          whattoadd += '<tbody/>';
-          document.getElementById('table').innerHTML += whattoadd;
+          if (req.readyState == 4 && req.status == 200 && req.responseText) {
+            let myArr = JSON.parse(req.responseText);
+            var whattoadd = '<tbody>';
+            console.log(myArr.length);
+            myArr.forEach(book => {
+              whattoadd += '<tr>';
+              whattoadd += '<td>' + book.name + '</td>';
+              whattoadd += '<td>' + book.author + '</td>';
+              whattoadd += '<td>' + book.description + '</td>';
+              whattoadd += '<td>' + book.year + '</td>';
+              whattoadd += '<td>' + book.price + '</td>';
+              whattoadd += `<td><button type="button" class="btn btn-warning" onclick="location.href='./update.html?id=${bookId}'">Edit</button></td>`;
+              whattoadd += `<td><button type="button" class="btn btn-danger" onclick="location.href='./delete.html?id=${bookId}'">Delete</button></td>`;
+              whattoadd += '</tr>';
+            });
+            whattoadd += '<tbody/>';
+            document.getElementById('table').innerHTML += whattoadd;
+          }          
         };
         req.send();
       });
@@ -59,12 +62,11 @@
           <th>Topics</th>
           <th>Year</th>
           <th>Price</th>
-          <th>Edit</th>
-          <th>Delete</th>
+          <th colspan="2">Actions</th>
         </tr>
       </thead>
     </table>
-    <button type="button" class="btn btn-primary" style="width:80px">
+    <button type="button" class="btn btn-primary" style="width:80px" onclick="location.href='./create.html'">
       Create
     </button>
   </body>
