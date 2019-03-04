@@ -45,7 +45,6 @@ function post(book, cb) {
 
 function put(id, book, cb) {
   if(!hasOneKey(book)) return cb(createError(400, 'At least one key required.'));
-  let sqlStr = buildPutQuery(book, id);
   connection.query(buildPutQuery(book, id), function(err, res) {
     if (err) return cb(err);
     return cb(null, res.insertId);
@@ -83,7 +82,8 @@ function buildPutQuery(book, id) {
   let sqlStr = 'UPDATE books SET ';
   let keys = Object.keys(book);
   keys.forEach(k => {
-    sqlStr += `${k} = "${book[k]}", `;
+    if(book[k])
+      sqlStr += `${k} = "${book[k]}", `;
   });
   return sqlStr.substring(0, sqlStr.length - 2) + ` WHERE id = ${id};`;
 }

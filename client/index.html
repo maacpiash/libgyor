@@ -11,6 +11,7 @@
       integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
       crossorigin="anonymous"
     />
+    <script src="main.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
@@ -24,14 +25,14 @@
     ></script>
     <script>
       $(document).ready(function() {
-        var req = new XMLHttpRequest();
+        let req = new XMLHttpRequest();
         req.overrideMimeType('application/json');
         req.open('GET', 'http://localhost:4000/api/books', true);
         req.onreadystatechange = function() {
           if (req.readyState == 4 && req.status == 200 && req.responseText) {
             let myArr = JSON.parse(req.responseText);
             var whattoadd = '<tbody>';
-            console.log(myArr.length);
+            console.log(myArr[0].name);
             myArr.forEach(book => {
               whattoadd += '<tr>';
               whattoadd += '<td>' + book.name + '</td>';
@@ -39,11 +40,11 @@
               whattoadd += '<td>' + book.description + '</td>';
               whattoadd += '<td>' + book.year + '</td>';
               whattoadd += '<td>' + book.price + '</td>';
-              whattoadd += `<td><button type="button" class="btn btn-warning" onclick="location.href='./update.html?id=${bookId}'">Edit</button></td>`;
-              whattoadd += `<td><button type="button" class="btn btn-danger" onclick="location.href='./delete.html?id=${bookId}'">Delete</button></td>`;
+              whattoadd += `<td><button type="button" class="btn btn-warning" onclick="location.href='./update.html?id=${book.id}'">Edit</button></td>`;
+              whattoadd += `<td><button type="button" class="btn btn-danger" onclick="deleteBook(${book.id})">Delete</button></td>`;
               whattoadd += '</tr>';
             });
-            whattoadd += '<tbody/>';
+            whattoadd += '</tbody>';
             document.getElementById('table').innerHTML += whattoadd;
           }          
         };
