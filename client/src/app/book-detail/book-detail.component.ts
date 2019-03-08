@@ -20,9 +20,11 @@ export class BookDetailComponent implements OnInit {
     if (form != null) { form.form.reset(); }
     this.service.formData = {
       id: 0,
-      name: '',
+      title: '',
       author: '',
       description: '',
+      tags: '',
+      publisher: '',
       year: 0,
       price: 0
     };

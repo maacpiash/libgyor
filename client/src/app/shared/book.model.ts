@@ -1,8 +1,10 @@
 export class Book {
   id: number;
-  name: string;
+  title: string;
   author: string;
   description: string;
+  tags: string;
+  publisher: string;
   year: number;
   price: number;
 }

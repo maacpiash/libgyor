@@ -2,6 +2,6 @@ _id,title,author,description,tags,publisher,year,price
 ObjectId("5c823b0864a7c46b521f232c"),Introduction to Algorithms,CLRS,An introductory book on algorithm, covering the most commonly used algorithms,"["algorithm","programming"]",MIT Press,1989,299
 ObjectId("5c8241e564a7c46b521f232e"),Digital Logic and Computer Design,M. Morris Mano,An introductory book on electronic representation of boolean algebra and binary logic,"["dld","logic","electrical","electronic","binary","circuit"]",Pearson Education,1979,231
 ObjectId("5c824b8cf7d3196b52e9bea2"),The C Programming Language,K&R,The very first book on C programming language,"["c","programming"]",Prentice Hall,1978,115
-ObjectId("5c824b8cf7d3196b52e9bea3"),,Nell Dale,Basic book on data structure implementation in C++,"["c++","cpp","data structure","programming","algorithm"]",Jones and Bartlett,1998,225
-ObjectId("5c824b8cf7d3196b52e9bea4"),,Norvig/Russell,A beginner's guide to AI algorithms,"["ai","ml","programming","algorithm"]",Prentice Hall,1994,440
+ObjectId("5c824b8cf7d3196b52e9bea3"),C++ Plus Data Structures,Nell Dale,Basic book on data structure implementation in C++,"["c++","cpp","data structure","programming","algorithm"]",Jones and Bartlett,1998,225
+ObjectId("5c824b8cf7d3196b52e9bea4"),Artificial Intelligence: A Modern Approach,Norvig/Russell,A beginner's guide to AI algorithms,"["ai","ml","programming","algorithm"]",Prentice Hall,1994,440
 ObjectId("5c824b8cf7d3196b52e9bea5"),Introduction to Java Programming,Y. Daniel Liang,An introduction to Java programming and OOP concepts,,Pearson Education,1997,215
