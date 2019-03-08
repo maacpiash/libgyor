@@ -1,108 +1,78 @@
 'use strict';
 
-// Server, routing
-const http = require('http');
+// Server, routing, cors, log
+const express = require('express');
+const cors = require('cors');
 
-// DBCtrl
-const DbCtrl = require('./dbController');
+// Database Service
+const service = require('./service');
 
-let mysqlConfig = {
-  host: 'localhost',
-  user: 'root',
-  password: '1212',
-  database: 'booksdb'
-};
+// Error creation and handling
+const createError = require('http-errors');
+const appErrorHandler = require('./app-error-handler');
 
-const PORT = 1416;
+const LISTEN_PORT = process.env.LISTEN_PORT || 4000;
 
-const server = http.createServer();
+const app = express();
 
-server.on('request', (req, res) => {
-  let args = req.url.slice(1).split('/');
-  if (args.length < 2 || args[0].toLowerCase() != 'api' || args[1].toLowerCase() != 'books') {
-    res.writeHead(400, { 'Content-Type': 'application/json' });
-    res.write('{"error": "Invalid URL"}\n');
-    res.end();
-  }
+app.use(cors());
 
-  let method = req.method;
-  let id = args[2] || undefined;
-  let body = [];
-  let timeStamp = new Date().toLocaleString();
+app.use(express.json());
 
-  switch (method) {
-  case 'GET':
-    DbCtrl.Get(mysqlConfig, id, function (status, payload) {
-      res.writeHead(status, { 'Content-Type': 'application/json' });
-      res.end(payload);
-      console.log(timeStamp, method, status);
-    });
-    break;
-
-  case 'POST':
-    
-    body = [];
-    req.on('data', chunk => body.push(chunk))
-      .on('end', () => {
-        if(!body.length) {
-          res.writeHead(400, { 'Content-Type': 'application/json' });
-          res.end('{"Error": "Empty body"}\n');
-          console.log(timeStamp, method, '400');
-        } else {
-          DbCtrl.Post(mysqlConfig, Buffer.concat(body).toString('utf8'), function (status, response) {
-            res.writeHead(status, { 'Content-Type': 'application/json' });
-            res.end(response);
-            console.log(timeStamp, method, status);
-          });
-        }
-      });
-    break;
-
-  case 'PUT':
-    if (!id) {
-      res.writeHead(400, { 'Content-Type': 'application/json' }); // Bad request
-      res.end('{"Error": "Must provide ID of the book to be deleted."}');
-      console.log(timeStamp, method, '400');
-    } else {
-      body = [];
-      req.on('data', chunk => body.push(chunk))
-        .on('end', () => {
-          if(!body.length) {
-            res.writeHead(400, { 'Content-Type': 'application/json' });
-            res.end('{"Error": "Empty body"}\n');
-            console.log(timeStamp, method, '400');
-          } else {
-            DbCtrl.Put(mysqlConfig, id, body.toString('utf8'), function (status, response) {
-              console.log(timeStamp, method, status);
-              res.writeHead(status, { 'Content-Type': 'application/json' });
-              res.end(response);
-            });
-          }
-        });
-    }
-    break;
-
-  case 'DELETE':
-    if (!id) {
-      res.writeHead(400, { 'Content-Type': 'application/json' }); // Bad request
-      res.end('{"Error": "Must provide ID of the book to be deleted."}');
-      console.log(timeStamp, method, '400');
-    } else {
-      DbCtrl.Delete(mysqlConfig, args[2], function (status, response) {
-        res.writeHead(status, { 'Content-Type': 'application/json' });
-        res.end(response);
-        console.log(timeStamp, method, status);
-      });
-    }
-    break;
-
-  default:
-    res.writeHead(405, { 'Content-Type': 'application/json' }); // Bad request
-    res.write(`"Error": "Request method ${method} is not acceptable. Only GET, POST, PUT, DELETE methods are accepted."`);
-    console.log(timeStamp, method, '405');
-    res.end();
-    break;
-  }
+app.get('/api/books', (req, res, next) => {
+  service.getAll(function(err, result) {
+    if (err) return next(createError(404, 'Book not found'));
+    res.status(200);
+    res.send(result);
+    next();
+  });
 });
 
-server.listen(PORT, console.log(`Server started on port ${PORT}`));
+app.get('/api/books/:id', (req, res, next) => {
+  service.get(req.params.id, function(err, result) {
+    if (err) return next(err);
+    res.status(200);
+    res.send(result);
+    next();
+  });
+});
+
+app.post('/api/books', (req, res, next) => {
+  service.post(req.body, function (err, result) {
+    if (err) return next(err);
+    res.status(201);
+    res.send({result});
+    next();
+  });
+});
+
+app.put('/api/books/:id', (req, res, next) => {
+  service.put(req.params.id, req.body, function (error, result) {
+    if (error) return next(error);
+    if(!result) return next(createError(404, 'Book not found.'));
+    res.send({
+      message: result + ' book modified.'
+    });
+    next();
+  });
+});
+
+app.delete('/api/books/:id', (req, res, next) => {
+  service.deLete(req.params.id, function (error, result) {
+    if (error) return next(error);
+    if(!result) return next(createError(404, 'Book not found.'));
+    res.send({
+      message: result + ' book deleted.'
+    });
+    next();
+  });
+});
+
+app.use('/api/books', (req, res, next) => {
+  console.log(new Date().toLocaleString(), req.method, res.statusCode);
+  next();
+});
+
+app.use(appErrorHandler);
+
+app.listen(LISTEN_PORT, console.log(`Server started on port ${LISTEN_PORT}`));
