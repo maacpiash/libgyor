@@ -1,18 +1,21 @@
 const MongoClient = require('mongodb').MongoClient;
 const createError = require('http-errors');
 const url = 'mongodb://localhost:27017';
-const client = new MongoClient(url);
+const client = new MongoClient(url, { useNewUrlParser: true });
 const dbName = 'Library';
 const colName = 'Books';
+const dbKeys = ['title', 'author', 'description', 'tags', 'publisher', 'year', 'price'];
 
 function get(id, cb) {
-//   connection.query('SELECT * FROM books WHERE id = ?', [id], function(err, result) {
-//     if (err) return cb(err);
-//     if (result.length === 0) {
-//       return cb(createError(404, 'Book not found'));
-//     }
-//     return cb(null, result[0]);
-//   });
+  client.connect(function (err) {
+    if (err) return cb(err);
+    const table = client.db(dbName).collection(colName);
+    table.find({ _id: id }).toArray(function(err, docs) {
+      if (err) return cb(err);
+      if (docs.length === 0) return cb(createError(404, `Book with id ${id} not found`));
+      return cb(null, docs);
+    });
+  });
 }
 
 function getAll(cb) {
@@ -25,13 +28,6 @@ function getAll(cb) {
       return cb(null, docs);
     });
   });
-  // connection.query('SELECT * FROM books', function(err, result) {
-  //   if (err) return cb(err);
-  //   if (result.length === 0) {
-  //     return cb(createError(404, 'Book not found'));
-  //   }
-  //   return cb(null, result);
-  // });  
 }
 
 function post(book, cb) {
@@ -65,23 +61,19 @@ function deLete(id, cb) {
 }
 
 function hasAllKeys(book) {
-//   let jsKeys = Object.keys(book);
-//   // if (jsKeys === [] || jsKeys === null)
-//   //   return false;
-//   const dbKeys = ['name', 'author', 'description', 'year', 'price'];
-//   let flag = true;
-//   dbKeys.forEach(k => flag = flag && jsKeys.includes(k));
-//   return flag;
+  let jsKeys = Object.keys(book);
+  let flag = true;
+  dbKeys.forEach(k => flag = flag && jsKeys.includes(k));
+  return flag;
 }
 
 function hasOneKey(book) {
-//   let jsKeys = Object.keys(book);
-//   if (jsKeys.length === 0)
-//     return false;
-//   const dbKeys = ['name', 'author', 'description', 'year', 'price'];
-//   let flag = false;
-//   dbKeys.forEach(k => { if (jsKeys.includes(k)) flag = true; });
-//   return flag;
+  let jsKeys = Object.keys(book);
+  if (jsKeys.length === 0)
+    return false;
+  let flag = false;
+  dbKeys.forEach(k => { if (jsKeys.includes(k)) flag = true; });
+  return flag;
 }
 
 function buildPutQuery(book, id) {
