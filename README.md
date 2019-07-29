@@ -1,23 +1,15 @@
 # Libgyor
 
+[![Travis (.org)](https://img.shields.io/travis/maacpiash/libgyor?style=flat-square)](https://travis-ci.org/maacpiash/libgyor)
+[![Codecov Coverage](https://img.shields.io/codecov/c/github/maacpiash/spongemockify.svg)](https://codecov.io/gh/maacpiash/spongemockify)
+
 A simple manager for a library of e-books.
 
 ## Instructions
 
-Give the following commands to start the server inside the `server` folder:
+First, execute `yarn` command to install the dependencies.
 
-``` bash
-npm install
-node index.js
-```
-
-Then, start the client inside the `client` folder:
-```bash
-npm install
-npm start
-```
-
-The `npm` commands might require superuser privilege in *nix systems.
+Then run `yarn install` to start the application(s).
 
 ## Roadmap
 
@@ -29,10 +21,10 @@ The `npm` commands might require superuser privilege in *nix systems.
 - [x] Creation of a database
 - [x] Creation of a server
 - [x] Basic CRUD operations via API
-    - [x] Create new book entries
-    - [x] Read existing book entries
-    - [x] Update existing book entries
-    - [x] Delete existing book entries
+  - [x] Create new book entries
+  - [x] Read existing book entries
+  - [x] Update existing book entries
+  - [x] Delete existing book entries
 - [x] Persistent storage (MySQL)
 
 </details>

@@ -1,5 +1,5 @@
 {
-  "name": "libgyor",
+  "name": "@libgyor/server",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/abdulchowdhury-dsi/libgyor.git"
+    "url": "git+https://github.com/maacpiash/libgyor.git"
   },
   "keywords": [
     "node",
@@ -20,15 +20,14 @@
   "author": "ahad",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/abdulchowdhury-dsi/libgyor/issues"
+    "url": "https://github.com/maacpiash/libgyor/issues"
   },
-  "homepage": "https://github.com/abdulchowdhury-dsi/libgyor#readme",
+  "homepage": "https://github.com/maacpiash/libgyor#readme",
   "dependencies": {
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
     "express": "^4.16.4",
-    "mongodb": "^3.1.13",
-    "mysql": "^2.16.0"
+    "mongodb": "^3.1.13"
   },
   "devDependencies": {
     "eslint": "^5.14.1"

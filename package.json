@@ -1,6 +1,11 @@
 {
-  "name": "root",
+  "name": "libgyor",
+  "npmClient": "yarn",
   "private": true,
+  "workspaces": ["client", "server"],
+  "scripts": {
+    "start": "lerna run --parallel start"
+  },
   "devDependencies": {
     "lerna": "^3.15.0"
   }

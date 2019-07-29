@@ -54,9 +54,14 @@ function put(id, book, cb) {
 }
 
 function deLete(id, cb) {
-  connection.query('DELETE FROM books WHERE id = ' + id, function(err, res) {
+  client.connect(function (err) {
     if (err) return cb(err);
-    return cb(null, res.affectedRows);
+    const table = client.db(dbName).collection(colName);
+    table.deleteOne({ id }, function(err, res) {
+      if (err) return cb(err);
+      if (res.result.n === 0) return cb(createError(500, 'Book deletion failed.'));
+      return cb(null);
+    });
   });
 }
 
