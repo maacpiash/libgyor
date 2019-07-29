@@ -22,8 +22,6 @@ app.use(express.json());
 app.get('/api/books', (req, res, next) => {
   service.getAll(function(err, result) {
     if (err) return next(createError(404, 'Book not found'));
-    // console.log('RESULT', result)
-    // result.foreach(book => console.log(book['tags']) /*= book['tags'].toString()*/);
     res.status(200);
     res.send(result);
     next();

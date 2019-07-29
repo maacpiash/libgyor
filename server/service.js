@@ -31,33 +31,33 @@ function getAll(cb) {
 }
 
 function post(book, cb) {
-  // if (!hasAllKeys(book)) {
-  //   console.log('OBJECT', book);
-  //   return cb(createError(400, 'All keys required.'));
-  // }
-  
-  // let details = [book.name, book.author, book.description, book.year, book.price];
-  // connection.query(
-  //   'INSERT INTO books (name, author, description, year, price) VALUES (?, ?, ?, ?, ?)', details, function(error, result) {
-  //     if (error) return cb(error);
-  //     return cb(null, result.insertId);
-  //   }
-  // );
+  if (!hasAllKeys(book))
+    return cb(createError(400, 'All keys required.'));
+
+  client.connect(function (err) {
+    if (err) return cb(err);
+    const table = client.db(dbName).collection(colName);
+    table.insertOne(book, function(err, res) {
+      if (err) return cb(err);
+      if (res.insertedCount === 0) return cb(createError(500, 'Book insertion failed.'));
+      return cb(null);
+    });
+  });
 }
 
 function put(id, book, cb) {
-//   if(!hasOneKey(book)) return cb(createError(400, 'At least one key required.'));
-//   connection.query(buildPutQuery(book, id), function(err, res) {
-//     if (err) return cb(err);
-//     return cb(null, res.insertId);
-//   });
+  if(!hasOneKey(book)) return cb(createError(400, 'At least one key required.'));
+  connection.query(buildPutQuery(book, id), function(err, res) {
+    if (err) return cb(err);
+    return cb(null, res.insertId);
+  });
 }
 
 function deLete(id, cb) {
-//   connection.query('DELETE FROM books WHERE id = ' + id, function(err, res) {
-//     if (err) return cb(err);
-//     return cb(null, res.affectedRows);
-//   });
+  connection.query('DELETE FROM books WHERE id = ' + id, function(err, res) {
+    if (err) return cb(err);
+    return cb(null, res.affectedRows);
+  });
 }
 
 function hasAllKeys(book) {
@@ -77,13 +77,13 @@ function hasOneKey(book) {
 }
 
 function buildPutQuery(book, id) {
-//   let sqlStr = 'UPDATE books SET ';
-//   let keys = Object.keys(book);
-//   keys.forEach(k => {
-//     if(book[k])
-//       sqlStr += `${k} = "${book[k]}", `;
-//   });
-//   return sqlStr.substring(0, sqlStr.length - 2) + ` WHERE id = ${id};`;
+  let sqlStr = 'UPDATE books SET ';
+  let keys = Object.keys(book);
+  keys.forEach(k => {
+    if(book[k])
+      sqlStr += `${k} = "${book[k]}", `;
+  });
+  return sqlStr.substring(0, sqlStr.length - 2) + ` WHERE id = ${id};`;
 }
 
 module.exports = {
