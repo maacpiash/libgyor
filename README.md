@@ -9,7 +9,7 @@ A simple manager for a library of e-books.
 
 First, execute `yarn` command to install the dependencies.
 
-Then run `yarn install` to start the application(s).
+Then run `yarn start` to start the application(s).
 
 ## Roadmap
 

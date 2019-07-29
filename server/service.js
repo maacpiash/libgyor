@@ -32,7 +32,7 @@ function getAll(cb) {
 
 function post(book, cb) {
   if (!hasAllKeys(book))
-    return cb(createError(400, 'All keys required.'));
+    return cb(createError(400, 'All keys are required.'));
 
   client.connect(function (err) {
     if (err) return cb(err);
@@ -46,18 +46,25 @@ function post(book, cb) {
 }
 
 function put(id, book, cb) {
-  if(!hasOneKey(book)) return cb(createError(400, 'At least one key required.'));
-  // connection.query(buildPutQuery(book, id), function(err, res) {
-  //   if (err) return cb(err);
-  //   return cb(null, res.insertId);
-  // });
+  if(!hasOneKey(book))
+    return cb(createError(400, 'At least one key is required.'));
+
+  client.connect(function (err) {
+    if (err) return cb(err);
+    const table = client.db(dbName).collection(colName);
+    table.updateOne({ _id: id }, book, function(err, res) {
+      if (err) return cb(err);
+      if (res.result.nModified === 0) return cb(createError(500, 'Book modification failed.'));
+      return cb(null);
+    });
+  });
 }
 
 function deLete(id, cb) {
   client.connect(function (err) {
     if (err) return cb(err);
     const table = client.db(dbName).collection(colName);
-    table.deleteOne({ id }, function(err, res) {
+    table.deleteOne({ _id: id }, function(err, res) {
       if (err) return cb(err);
       if (res.result.n === 0) return cb(createError(500, 'Book deletion failed.'));
       return cb(null);
