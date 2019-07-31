@@ -2,11 +2,17 @@
   "name": "libgyor",
   "npmClient": "yarn",
   "private": true,
-  "workspaces": ["client", "server"],
+  "workspaces": [
+    "client",
+    "server"
+  ],
   "scripts": {
-    "start": "lerna run --parallel start"
+    "start": "lerna run --parallel start",
+    "populate": "node populate-books.js"
   },
-  "devDependencies": {
+  "dependencies": {
+    "dotenv": "^8.0.0",
+    "fs": "^0.0.1-security",
     "lerna": "^3.15.0"
   }
 }

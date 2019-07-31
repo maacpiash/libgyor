@@ -11,6 +11,8 @@ First, execute `yarn` command to install the dependencies.
 
 Then run `yarn start` to start the application(s).
 
+You can populate the database with a collection of some sample documents by `yarn populate` command.
+
 ## Roadmap
 
 <details>

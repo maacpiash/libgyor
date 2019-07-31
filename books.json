@@ -1,7 +1,5 @@
-{
-    "_id": {
-        "$oid": "5c823b0864a7c46b521f232c"
-    },
+[
+  {
     "title": "Introduction to Algorithms",
     "author": "CLRS",
     "description": "An introductory book on algorithm, covering the most commonly used algorithms",
@@ -10,17 +8,10 @@
         "programming"
     ],
     "publisher": "MIT Press",
-    "year": {
-        "$numberInt": "1989"
-    },
-    "price": {
-        "$numberDecimal": "299"
-    }
-}
-{
-    "_id": {
-        "$oid": "5c8241e564a7c46b521f232e"
-    },
+    "year": 1989,
+    "price": 173
+  },
+  {
     "title": "Digital Logic and Computer Design",
     "author": "M. Morris Mano",
     "description": "An introductory book on electronic representation of boolean algebra and binary logic",
@@ -33,17 +24,10 @@
         "circuit"
     ],
     "publisher": "Pearson Education",
-    "year": {
-        "$numberInt": "1979"
-    },
-    "price": {
-        "$numberDecimal": "231"
-    }
-}
-{
-    "_id": {
-        "$oid": "5c824b8cf7d3196b52e9bea2"
-    },
+    "year": 1979,
+    "price": 231
+  },
+  {
     "title": "The C Programming Language",
     "author": "K&R",
     "description": "The very first book on C programming language",
@@ -52,17 +36,10 @@
         "programming"
     ],
     "publisher": "Prentice Hall",
-    "year": {
-        "$numberInt": "1978"
-    },
-    "price": {
-        "$numberDecimal": "115"
-    }
-}
-{
-    "_id": {
-        "$oid": "5c824b8cf7d3196b52e9bea3"
-    },
+    "year": 1978,
+    "price": 115
+  },
+  {
     "title": "C++ Plus Data Structures",
     "author": "Nell Dale",
     "description": "Basic book on data structure implementation in C++",
@@ -74,17 +51,10 @@
         "algorithm"
     ],
     "publisher": "Jones and Bartlett",
-    "year": {
-        "$numberInt": "1998"
-    },
-    "price": {
-        "$numberDecimal": "225"
-    }
-}
-{
-    "_id": {
-        "$oid": "5c824b8cf7d3196b52e9bea4"
-    },
+    "year": 1998,
+    "price": 225
+  },
+  {
     "title": "Artificial Intelligence: A Modern Approach",
     "author": "Norvig/Russell",
     "description": "A beginner's guide to AI algorithms",
@@ -95,25 +65,19 @@
         "algorithm"
     ],
     "publisher": "Prentice Hall",
-    "year": {
-        "$numberInt": "1994"
-    },
-    "price": {
-        "$numberDecimal": "440"
-    }
-}
-{
-    "_id": {
-        "$oid": "5c824b8cf7d3196b52e9bea5"
-    },
+    "year": 1994,
+    "price": 440
+  },
+  {
     "title": "Introduction to Java Programming",
     "author": "Y. Daniel Liang",
     "description": "An introduction to Java programming and OOP concepts",
+    "tags": [
+      "java",
+      "programming"
+    ],
     "publisher": "Pearson Education",
-    "year": {
-        "$numberInt": "1997"
-    },
-    "price": {
-        "$numberDecimal": "215"
-    }
-}
+    "year": 1997,
+    "price": 215
+  }
+]
