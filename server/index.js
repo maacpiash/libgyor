@@ -21,7 +21,7 @@ app.use(express.json());
 
 app.get('/api/books', (req, res, next) => {
   service.getAll(function(err, result) {
-    if (err) return next(createError(404, 'Book not found'));
+    if (err) return next(createError(404, 'Book(s) not found'));
     res.status(200);
     res.send(result);
     next();
@@ -51,7 +51,7 @@ app.put('/api/books/:id', (req, res, next) => {
     if (error) return next(error);
     if(!result) return next(createError(404, 'Book not found.'));
     res.send({
-      message: result + ' book modified.'
+      message: result + ' book(s) modified.'
     });
     next();
   });
@@ -62,7 +62,7 @@ app.delete('/api/books/:id', (req, res, next) => {
     if (error) return next(error);
     if(!result) return next(createError(404, 'Book not found.'));
     res.send({
-      message: result + ' book deleted.'
+      message: result + ' book(s) deleted.'
     });
     next();
   });

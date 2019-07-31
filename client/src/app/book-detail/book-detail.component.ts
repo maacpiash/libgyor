@@ -12,7 +12,7 @@ export class BookDetailComponent implements OnInit {
 
   constructor(private service: BookDetailService, private toastr: ToastrService) { }
 
-    ngOnInit() {
+  ngOnInit() {
     this.resetForm();
   }
 
@@ -35,6 +35,7 @@ export class BookDetailComponent implements OnInit {
   }
 
   onSubmit(form: NgForm) {
+    console.log('BOOK ID: ' + this.service.formData.id);
     if (this.service.formData.id == 0)
       this.insertRecord(form);
     else

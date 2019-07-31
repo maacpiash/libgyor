@@ -23,12 +23,12 @@ export class BookListComponent implements OnInit {
   onDelete(id) {
     if (confirm('Are you sure to delete this record?')) {
       this.service.deleteBookDetail(id)
-      .subscribe(res => {
-          this.service.refreshList();
-          this.toastr.warning('Deleted successfully', 'Libgyor');
-        },
-        err => console.log(err)
-      );
+        .subscribe(res => {
+            this.service.refreshList();
+            this.toastr.warning('Deleted successfully', 'Libgyor');
+          },
+          err => console.log(err)
+        );
     }
   }
 
