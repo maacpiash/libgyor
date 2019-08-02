@@ -1,7 +1,7 @@
 # Libgyor
 
 [![Travis (.org)](https://img.shields.io/travis/maacpiash/libgyor?style=flat-square)](https://travis-ci.org/maacpiash/libgyor)
-[![Codecov Coverage](https://img.shields.io/codecov/c/github/maacpiash/spongemockify.svg)](https://codecov.io/gh/maacpiash/spongemockify)
+[![Codecov Coverage](https://img.shields.io/codecov/c/github/maacpiash/libgyor.svg?style=flat-square)](https://codecov.io/gh/maacpiash/libgyor)
 
 A simple manager for a library of e-books.
 
